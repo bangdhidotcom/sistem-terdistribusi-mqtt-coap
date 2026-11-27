@@ -1,0 +1,16 @@
+{
+  "run_id": "c2m_r10_s10",
+  "direction": "c2m",
+  "rate": 10,
+  "rep": 10,
+  "duration": 600,
+  "payload_size": 4096,
+  "ready": true,
+  "delivered": 4645,
+  "status": "ok",
+  "ports": {
+    "mqtt": 1884,
+    "coap": 5684
+  },
+  "finished_at": 1795698933.4044669
+}

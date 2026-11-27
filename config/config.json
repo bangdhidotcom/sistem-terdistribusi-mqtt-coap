@@ -1,0 +1,7 @@
+{
+  "mqtt_host": "127.0.0.1",
+  "mqtt_port": 1883,
+  "coap_host": "127.0.0.1",
+  "coap_port": 5683,
+  "state_file": "data/state.json"
+}

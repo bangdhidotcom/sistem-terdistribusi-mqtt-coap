@@ -1,0 +1,16 @@
+{
+  "run_id": "m2c_r10_s05",
+  "direction": "m2c",
+  "rate": 10,
+  "rep": 5,
+  "duration": 600,
+  "payload_size": 4096,
+  "ready": true,
+  "delivered": 5751,
+  "status": "ok",
+  "ports": {
+    "mqtt": 1883,
+    "coap": 5683
+  },
+  "finished_at": 1795665876.6047351
+}

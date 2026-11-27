@@ -1,0 +1,15 @@
+# requirements.txt
+paho-mqtt==2.2.0
+aiocoap==0.4.17
+scapy
+amqtt==0.12.2
+psutil
+matplotlib
+pandas
+numpy
+python-docx
+python-pptx
+reportlab
+PyMuPDF
+lxml
+openpyxl
