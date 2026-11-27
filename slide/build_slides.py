@@ -17,6 +17,7 @@ prs = Presentation()
 prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
 BLANK = prs.slide_layouts[6]
 
+TEXT = RGBColor(0, 0, 0)
 NAVY = RGBColor(30, 42, 71)
 BLUE = RGBColor(42, 95, 212)
 GREEN = RGBColor(14, 124, 102)
@@ -32,7 +33,7 @@ def _footer(s):
     box = s.shapes.add_textbox(Inches(0.4), Inches(7.05), Inches(12.5), Inches(0.3)).text_frame
     p = box.paragraphs[0]
     p.text = "Sistem Terdistribusi A  |  Replikasi MQTT ↔ CoAP  |  " + str(idx)
-    p.font.size, p.font.color.rgb = Pt(9), MUTED
+    p.font.size, p.font.color.rgb = Pt(9), TEXT
     p.alignment = PP_ALIGN.RIGHT
 
 
@@ -44,11 +45,11 @@ def slide(title, subtitle=None):
     bar.line.fill.background()
 
     p = s.shapes.add_textbox(Inches(0.5), Inches(0.28), Inches(12.3), Inches(0.75)).text_frame.paragraphs[0]
-    p.text, p.font.size, p.font.bold, p.font.color.rgb = title, Pt(25), True, NAVY
+    p.text, p.font.size, p.font.bold, p.font.color.rgb = title, Pt(25), True, TEXT
     p.alignment = PP_ALIGN.CENTER
     if subtitle:
         q = s.shapes.add_textbox(Inches(0.7), Inches(1.0), Inches(12), Inches(0.4)).text_frame.paragraphs[0]
-        q.text, q.font.size, q.font.color.rgb = subtitle, Pt(12.5), BLUE
+        q.text, q.font.size, q.font.color.rgb = subtitle, Pt(12.5), TEXT
         q.alignment = PP_ALIGN.CENTER
     _footer(s)
     return s
@@ -60,7 +61,7 @@ def bullets(s, items, x=0.9, y=1.6, w=11.5, h=5.2, size=16):
     for i, it in enumerate(items):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.text = "• " + it
-        p.font.size, p.font.color.rgb = Pt(size), NAVY
+        p.font.size, p.font.color.rgb = Pt(size), TEXT
         p.space_after = Pt(10)
 
 
@@ -86,11 +87,11 @@ def table_shape(s, rows, x=0.6, y=1.7, w=12.1, h=4.6, size=11):
             c = t.cell(i, j)
             c.text = str(v)
             c.fill.solid()
-            c.fill.fore_color.rgb = NAVY if i == 0 else (PALE if i % 2 == 0 else WHITE)
+            c.fill.fore_color.rgb = PALE if i == 0 or i % 2 == 0 else WHITE
             for p in c.text_frame.paragraphs:
                 p.font.size = Pt(size if i else size + 0.5)
                 p.font.bold = i == 0
-                p.font.color.rgb = WHITE if i == 0 else NAVY
+                p.font.color.rgb = TEXT
 
 
 # ---------------------------------------------------------------- 1 Judul

@@ -104,6 +104,9 @@ def save_diagram(d, name, doc_id):
     png_path = f"output/{name}.png"
     with open(xml_path, "w", encoding="utf-8") as f:
         f.write(to_drawingml(d, doc_id=doc_id, name=name))
+    # Versi A4 dipakai laporan supaya shape editabel muat margin 2,5 cm.
+    with open(f"output-xml/{name}_a4.xml", "w", encoding="utf-8") as f:
+        f.write(to_drawingml(d, doc_id=doc_id, name=name + "_a4", max_w=15.8))
     render_png(d, png_path, dpi=200)
     print(f"--- Validating {name} ---")
     validate(d)

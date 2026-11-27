@@ -10,10 +10,21 @@ BLOCKS = [
         "text": "LAPORAN AKHIR SISTEM TERDISTRIBUSI",
         "sub": "Replikasi Conversion Server MQTT &#8596; CoAP pada Jaringan IP Konvensional<br>"
                "Mata Kuliah Sistem Terdistribusi A &#8212; Kelompok 3<br>"
-               "Muhammad Irfan Maulana (202310370311480)<br>"
-               "Hadrian Rakha Khosyi Javier (202310370311483)<br>"
-               "Bambang Adhi Nurbiyanto (202310370311484)<br>"
                "Batas pengumpulan: 7 Desember 2026 pukul 16.55 WIB",
+    },
+    {
+        "type": "h2",
+        "text": "Data Kelompok",
+    },
+    {
+        "type": "table",
+        "header": ["No", "Nama", "NIM", "Fokus utama"],
+        "rows": [
+            ["1", "Muhammad Irfan Maulana", "202310370311480", "Broker, publisher, subscriber"],
+            ["2", "Hadrian Rakha Khosyi Javier", "202310370311483", "CoAP server/client, payload"],
+            ["3", "Bambang Adhi Nurbiyanto", "202310370311484", "Conversion server, metrik, laporan"],
+        ],
+        "widths_cm": [0.9, 5.0, 3.6, 6.4],
     },
     {
         "type": "meta",
@@ -88,7 +99,6 @@ BLOCKS = [
                 "publisher dan broker memakai topik, CoAP client memakai resource, dan conversion "
                 "server menghubungkan keduanya.",
     },
-    {"type": "pagebreak"},
     {"type": "h1", "text": "1. Latar Belakang dan Tujuan"},
     {
         "type": "p",
@@ -121,6 +131,16 @@ BLOCKS = [
             "<b>Yang kami dokumentasikan:</b> konflik satuan laju di spesifikasi dan keterbatasan ukuran payload.",
         ],
     },
+    {
+        "type": "p",
+        "text": "Enam peran dipilih bukan untuk menambah kompleksitas, melainkan supaya setiap batas "
+                "tanggung jawab dapat diamati: siapa mengirim, siapa menerima, siapa menerjemahkan, "
+                "dan siapa memverifikasi. Dengan proses terpisah, log dari satu peran tidak tercampur "
+                "dengan peran lain, sehingga bukti keberhasilan dapat ditunjukkan tahap demi tahap "
+                "seperti yang dirinci di Bab 3 dan Bab 4. Semua proses memakai alamat 127.0.0.1 agar "
+                "eksperimen tidak bergantung pada perangkat keras tambahan dan dapat diulang dengan "
+                "satu perintah.",
+    },
     {"type": "h1", "text": "2. Tinjauan Pustaka"},
     {
         "type": "p",
@@ -137,6 +157,15 @@ BLOCKS = [
                 "and Design</i>, edisi ke-5, serta materi perkuliahan Sistem Terdistribusi UMM 2026 "
                 "tentang replikasi dan toleransi kesalahan. Deduplikasi berbasis ID unik adalah bentuk "
                 "sederhana dari toleransi terhadap pengiriman ulang.",
+    },
+    {
+        "type": "p",
+        "text": "Artikel acuan melaporkan delay puluhan detik untuk MQTT&#8594;CoAP, tetapi sekitar "
+                "0,18 detik untuk CoAP&#8594;MQTT dengan loss 92&#8211;95%. Kami membaca angka itu "
+                "sebagai akibat dari definisi waktu dan mekanisme antrean yang berbeda, bukan sebagai "
+                "bukti bahwa satu arah secara fisik selalu lebih lambat. Karena itu Bab 6 menyajikan "
+                "angka hasil kami sendiri dan Bab 7 menjelaskan sebab perbedaan tanpa menyatakan "
+                "salah satu lebih benar.",
     },
     {
         "type": "callout",
@@ -225,7 +254,6 @@ BLOCKS = [
                 "CoAP&#8594;MQTT. Topik <b>iot/mqtt_to_coap</b> dan <b>iot/coap_to_mqtt</b> serta resource "
                 "<b>/target</b> dan <b>/source</b> menjadi kontrak antarproses.",
     },
-    {"type": "pagebreak"},
     {"type": "h1", "text": "4. Alur Konversi Pesan"},
     {
         "type": "p",
@@ -298,7 +326,6 @@ BLOCKS = [
                 "tidak dikonversi lagi saat muncul di sisi lain. Tanpa penanda ini, pesan bisa "
                 "berputar terus antara MQTT dan CoAP.",
     },
-    {"type": "pagebreak"},
     {"type": "h1", "text": "5. Metode Eksperimen"},
     {
         "type": "p",
@@ -404,34 +431,32 @@ BLOCKS = [
                 "total akumulasi selama 10 menit per run.",
     },
     {
-        "type": "images_row",
-        "items": [
-            {
-                "path": "data/grafik/delay_e2e_per_menit.png",
-                "caption": "Gambar 4. E2E delay c2m lebih tinggi karena polling 1 detik.",
-                "width_cm": 7.1,
-            },
-            {
-                "path": "data/grafik/delay_konversi_per_menit.png",
-                "caption": "Gambar 5. Konversi m2c lebih lama karena round-trip POST CoAP.",
-                "width_cm": 7.1,
-            },
-        ],
+        "type": "image",
+        "path": "data/grafik/delay_e2e_per_menit.png",
+        "caption": "Gambar 4. Delay E2E per menit (rerata 10 run). Arah CoAP&#8594;MQTT lebih tinggi "
+                   "karena converter melakukan polling GET setiap 1 detik.",
+        "width_cm": 15.8,
     },
     {
-        "type": "images_row",
-        "items": [
-            {
-                "path": "data/grafik/cpu_per_menit.png",
-                "caption": "Gambar 6. CPU naik saat laju 20 pesan/detik, namun tetap wajar.",
-                "width_cm": 7.1,
-            },
-            {
-                "path": "data/grafik/perbandingan_artikel.png",
-                "caption": "Gambar 7. Perbandingan kualitatif dengan artikel acuan.",
-                "width_cm": 7.1,
-            },
-        ],
+        "type": "image",
+        "path": "data/grafik/delay_konversi_per_menit.png",
+        "caption": "Gambar 5. Delay konversi per menit. Arah MQTT&#8594;CoAP ~21 ms karena "
+                   "menunggu jawaban POST CoAP; sebaliknya ~4 ms.",
+        "width_cm": 15.8,
+    },
+    {
+        "type": "image",
+        "path": "data/grafik/cpu_per_menit.png",
+        "caption": "Gambar 6. CPU conversion server per menit. Beban naik pada laju "
+                   "20 pesan/detik, tetapi puncaknya masih 72,3%.",
+        "width_cm": 15.8,
+    },
+    {
+        "type": "image",
+        "path": "data/grafik/perbandingan_artikel.png",
+        "caption": "Gambar 7. Perbandingan loss (%) artikel acuan dengan replikasi untuk "
+                   "empat kombinasi arah dan laju.",
+        "width_cm": 15.8,
     },
     {
         "type": "p",
@@ -443,6 +468,15 @@ BLOCKS = [
     },
     {
         "type": "p",
+        "text": "Sumbu x Gambar 4&#8211;6 memakai indeks bucket 1&#8211;11, bukan nomor menit pada jam. "
+                "Satu run berlangsung 600 detik sehingga rentangnya melintang batas menit dan "
+                "menghasilkan 11 bucket; setiap titik adalah rata-rata lintas 10 run untuk bucket "
+                "yang sama. Gambar 7 berbeda: ia membandingkan loss pada artikel dan replikasi untuk "
+                "empat kombinasi arah dan laju, sehingga angkanya diambil dari Tabel 2.2 dan "
+                "Tabel 6.2, bukan dari rata-rata per menit.",
+    },
+    {
+        "type": "p",
         "text": "Menjawab <b>mengapa</b> angka di tabel muncul: arah CoAP&#8594;MQTT hampir tanpa loss "
                 "karena antrean <b>/source</b> menyimpan pesan sampai converter mengambilnya, tetapi E2E "
                 "tinggi karena polling 1 detik. Arah MQTT&#8594;CoAP loss-nya lebih besar karena POST CoAP "
@@ -451,7 +485,6 @@ BLOCKS = [
                 "menunjukkan ekor distribusi yang jauh lebih panjang dari rerata. CPU dan memori naik "
                 "seiring laju 20 pesan/detik, tetapi puncak CPU 72,3% masih menyisakan ruang.",
     },
-    {"type": "pagebreak"},
     {"type": "h1", "text": "7. Analisis dan Diskusi"},
     {
         "type": "p",
@@ -495,13 +528,13 @@ BLOCKS = [
     {"type": "h1", "text": "8. Pembagian Kerja"},
     {
         "type": "table",
-        "header": ["Anggota", "Fokus utama", "Bukti di repositori"],
+        "header": ["Anggota", "NIM", "Fokus utama", "Bukti di repositori"],
         "rows": [
-            ["Muhammad Irfan Maulana", "Broker, publisher, subscriber, konektivitas", "src/mqtt_*.py"],
-            ["Hadrian Rakha Khosyi Javier", "CoAP server/client, payload", "src/coap_server.py, src/coap_client.py"],
-            ["Bambang Adhi Nurbiyanto", "Conversion server, metrik, harness, laporan, slide", "src/conversion_server.py, experiments/, laporan/"],
+            ["Muhammad Irfan Maulana", "202310370311480", "Broker, publisher, subscriber, konektivitas", "src/mqtt_*.py"],
+            ["Hadrian Rakha Khosyi Javier", "202310370311483", "CoAP server/client, payload", "src/coap_server.py, src/coap_client.py"],
+            ["Bambang Adhi Nurbiyanto", "202310370311484", "Conversion server, metrik, harness, laporan, slide", "src/conversion_server.py, experiments/, laporan/"],
         ],
-        "widths_cm": [4.2, 6.0, 5.8],
+        "widths_cm": [3.7, 3.2, 4.8, 4.2],
     },
     {"type": "h1", "text": "9. Kesimpulan"},
     {

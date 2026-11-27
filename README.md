@@ -26,17 +26,20 @@ slide, diagram editabel, dan panduan sudah tersedia di repositori ini. Seluruh
 ## Luaran
 
 1. Kode: `src/` (6 peran logis), `config/`, `requirements.txt`, `experiments/`, `tests/`.
-2. Laporan teknis: `laporan/Laporan_Akhir_Sistem_Terdistribusi.pdf` (8 halaman) dan
-   `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx`. Keduanya dibuat dari satu sumber
-   blok `laporan/content.py` oleh `laporan/build_laporan.py`, sehingga isinya identik
-   (verifikasi otomatis ≈99,37% kesamaan teks; sisa perbedaan hanya marka layout).
+2. Laporan teknis: `laporan/Laporan_Akhir_Sistem_Terdistribusi.pdf` (10 halaman) dan
+   `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx`. Format A4, Times New Roman 12,
+   margin 2 cm, seluruh teks hitam, tanpa garis pembatas antar bagian. Keduanya dibuat
+   dari satu sumber blok `laporan/content.py` oleh `laporan/build_laporan.py`.
+   Kesamaan teks otomatis ≈94,6%: selisihnya adalah label di dalam 7 shape editabel
+   yang tidak bisa diekstrak sebagai teks dari PDF raster.
 3. Data: `data/raw/messages.csv`, `data/summary/summary.csv` (440 baris x 18 kolom),
    `data/grafik/*.png`.
 4. Slide: `slide/Slide_Presentasi.pptx` (12 slide).
-5. Diagram: `output/*.png` (full color, 200 DPI) dan `output-xml/*.xml` (shape Word
-   editabel, DrawingML asli tanpa gambar tertanam), plus
-   `laporan/Diagram_Editabel_Word.docx`. Keduanya berasal dari satu sumber
-   `diagram_specs/`; salinan SVG lama tidak dijadikan rujukan.
+5. Diagram dan grafik: `output/*.png` + `data/grafik/*.png` (preview 200 DPI) dan
+   `output-xml/*.xml` (7 shape Word editabel, DrawingML asli tanpa `r:embed` / media
+   tertanam). Kedua DOCX — laporan dan `laporan/Diagram_Editabel_Word.docx` —
+   menyisipkan 7 shape tersebut, bukan bitmap. Diagram berasal dari `diagram_specs/`,
+   grafik dari `laporan/chart_shapes.py`; salinan SVG lama tidak dijadikan rujukan.
 6. Panduan: `panduan/Verifikasi_Individu.md`, `Panduan_Pengumpulan_LMS.md`, `QnA.md`.
 
 ## Sumber tunggal folder
@@ -57,19 +60,20 @@ python experiments/payload_gen.py --size 4096 --out data/payload_4096.bin
 # Smoke test singkat (kampanye penuh 40 run sudah selesai, jangan dijalankan ulang):
 python experiments/run_matrix.py --duration 15 --reps 1 --rate 10 --direction both --payload-size 4096
 python experiments/summarize.py
-python experiments/plotting.py
 python diagram_specs/build_diagrams.py
 python diagram_specs/spec_flow.py
+python experiments/plotting.py       # = laporan/chart_shapes.py, XML + PNG satu sumber
 python laporan/build_docx.py
 python laporan/build_laporan.py
 python slide/build_slides.py
 python -m unittest discover -s tests
 ```
 
-Urutan regenerasi di atas wajib berurutan: diagram dulu, baru DOCX editabel, PDF, lalu slide.
-`laporan/build_report.py` adalah pembuat laporan versi lama yang menimpa path PDF yang sama —
-**jangan dijalankan**; satu-satunya sumber kanonik adalah `laporan/content.py` lewat
-`laporan/build_laporan.py`.
+Urutan regenerasi di atas wajib berurutan: diagram → grafik editabel → DOCX → PDF → slide.
+`laporan/build_report.py` adalah pembuat laporan versi lama yang menimpa path PDF yang sama
+dan menghasilkan gambar statis (bukan shape editabel) — **jangan dijalankan**. Satu-satunya
+sumber kanonik adalah `laporan/content.py` lewat `laporan/build_laporan.py`; file lama
+dibiarkan hanya sebagai arsip, bukan entry point.
 
 Kampanye penuh: 40 run (40 valid) = dua arah x dua laju x 10 pengulangan x 10 menit.
 Payload kampanye 4 KB; uji tambahan 200 KB blockwise tersedia lewat `--payload-size 204800`.

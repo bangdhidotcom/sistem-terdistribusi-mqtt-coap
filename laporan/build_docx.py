@@ -1,43 +1,67 @@
-"""Buat DOCX berisi diagram DrawingML editabel dari output-xml."""
+"""Buat DOCX berisi 7 gambar (diagram + grafik) sebagai shape Word editabel."""
 from pathlib import Path
+
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import parse_xml
-from docx.shared import Pt
+from docx.shared import Cm, Pt, RGBColor
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "laporan" / "Diagram_Editabel_Word.docx"
 
-def insert_drawing(doc, name):
-    xml = (ROOT / "output-xml" / f"{name}.xml").read_text(encoding="utf-8")
+NAMES = [
+    ("mqtt_coap_architecture", "Gambar 1. Arsitektur enam peran logis."),
+    ("flow_mqtt_to_coap", "Gambar 2. Enam tahap MQTT ke CoAP."),
+    ("flow_coap_to_mqtt", "Gambar 3. Enam tahap CoAP ke MQTT."),
+    ("delay_e2e_per_menit", "Gambar 4. Delay E2E per menit."),
+    ("delay_konversi_per_menit", "Gambar 5. Delay konversi per menit."),
+    ("cpu_per_menit", "Gambar 6. CPU per menit."),
+    ("perbandingan_artikel", "Gambar 7. Loss artikel vs replikasi."),
+]
+
+
+def insert_drawing(doc, name, caption):
+    src = ROOT / "output-xml" / f"{name}.xml"
+    if not src.exists():
+        return False
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p._p.append(parse_xml(xml))
-    doc.add_paragraph(f"Gambar: {name} (shape Word editabel; sumber XML di output-xml/).")
+    p._p.append(parse_xml(src.read_text(encoding="utf-8")))
+    cap = doc.add_paragraph(caption)
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    for r in cap.runs:
+        r.font.name = "Times New Roman"
+        r.font.size = Pt(10)
+        r.font.color.rgb = RGBColor(0, 0, 0)
+    return True
+
 
 def main():
     doc = Document()
-    doc.core_properties.title = "Diagram Editabel - Konversi MQTT CoAP"
+    sec = doc.sections[0]
+    sec.top_margin = sec.bottom_margin = Cm(2.5)
+    sec.left_margin = sec.right_margin = Cm(2.5)
+    normal = doc.styles["Normal"]
+    normal.font.name = "Times New Roman"
+    normal.font.size = Pt(12)
+    normal.font.color.rgb = RGBColor(0, 0, 0)
+
+    doc.core_properties.title = "Diagram dan Grafik Editabel - Konversi MQTT CoAP"
     doc.core_properties.author = "Kelompok Sistem Terdistribusi A"
-    h = doc.add_heading("Diagram Editabel Word", 0)
+    h = doc.add_heading("Diagram dan Grafik Editabel Word", 0)
     h.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    doc.add_paragraph("Dokumen ini menyisipkan elemen <w:drawing> native dari folder output-xml. "
-                      "Setiap kotak dan panah dapat diklik serta diubah di Microsoft Word. "
-                      "File PNG dengan nama yang sama tersedia di folder output untuk versi raster.")
-    for style in doc.styles:
-        if style.name == "Normal":
-            style.font.name = "Calibri"
-            style.font.size = Pt(10)
-    doc.add_heading("1. Arsitektur Enam Peran", level=1)
-    insert_drawing(doc, "mqtt_coap_architecture")
-    doc.add_page_break()
-    doc.add_heading("2. Alur MQTT ke CoAP", level=1)
-    insert_drawing(doc, "flow_mqtt_to_coap")
-    doc.add_page_break()
-    doc.add_heading("3. Alur CoAP ke MQTT", level=1)
-    insert_drawing(doc, "flow_coap_to_mqtt")
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    doc.save(str(OUT))
-    print("DOCX dibuat:", OUT)
+    doc.add_paragraph(
+        "Tujuh gambar berikut disisipkan sebagai elemen drawing Word native. "
+        "Setiap kotak, garis, dan label dapat diklik serta diubah di Word. "
+        "Sumber XML ada di folder output-xml/."
+    )
+    ok = 0
+    for name, caption in NAMES:
+        if insert_drawing(doc, name, caption):
+            ok += 1
+    doc.save(OUT)
+    print("DOCX editabel dibuat:", OUT, "shape:", ok)
+
 
 if __name__ == "__main__":
     main()
