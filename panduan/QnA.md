@@ -44,4 +44,4 @@ A: `output-xml/*.xml` berisi `<w:drawing>` dengan `wps:wsp`/`wpg:wgp` native Wor
 A: Ikuti urutan ringkas di `panduan/Demo_Cepat.md`: enam perintah sudah disiapkan lengkap dengan port alternatif (1884/5684) dan ekspektasi baris log. Jika demo gagal, buka contoh log di `data/bukti_konektivitas/` sebagai cadangan.
 
 **Q: File apa yang diunggah ke LMS?**
-A: Satu laporan PDF saja. Semua komponen lain dicantumkan sebagai tautan di dalam PDF.
+A: Satu laporan PDF saja. Semua komponen lain dicantumkan sebagai tautan klik di Bagian 10 (Daftar Pustaka dan Lampiran): repo, CSV mentah/ringkasan, grafik, XML/PNG diagram, DOCX editabel, laporan DOCX, slide PPTX, dan panduan. DOCX laporan memuat hyperlink yang sama agar isinya identik dengan PDF.

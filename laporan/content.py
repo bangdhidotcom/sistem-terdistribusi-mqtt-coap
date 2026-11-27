@@ -492,9 +492,15 @@ BLOCKS = [{'type': 'title',
             'Materi Sistem Terdistribusi 8&#8211;9, Universitas Muhammadiyah Malang, 2026.',
             'RFC 7252 (CoAP) dan RFC 7959 (blockwise transfer).']},
  {'type': 'p',
-  'text': 'Lampiran proyek mencakup kode dan konfigurasi di [repositori '
+  'text': 'Tautan artefak (dapat dibuka langsung dari laporan ini): [repositori '
           'GitHub](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap); data mentah '
-          '<b>data/raw/messages.csv</b>; ringkasan <b>data/summary/summary.csv</b>; grafik '
-          '<b>data/grafik/</b>; diagram editabel <b>output-xml/</b> dan '
-          '<b>laporan/Diagram_Editabel_Word.docx</b>; slide <b>slide/Slide_Presentasi.pptx</b>; '
-          'panduan <b>panduan/</b>.'}]
+          '[data/raw/messages.csv](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/blob/main/data/raw/messages.csv); '
+          'ringkasan [data/summary/summary.csv](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/blob/main/data/summary/summary.csv); '
+          'grafik [data/grafik/](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/tree/main/data/grafik); '
+          'diagram [output-xml/](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/tree/main/output-xml) dan '
+          '[output/](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/tree/main/output); '
+          'dokumen [Diagram_Editabel_Word.docx](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/blob/main/laporan/Diagram_Editabel_Word.docx) serta '
+          '[Laporan_Akhir_Sistem_Terdistribusi.docx](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/blob/main/laporan/Laporan_Akhir_Sistem_Terdistribusi.docx); '
+          'slide [Slide_Presentasi.pptx](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/blob/main/slide/Slide_Presentasi.pptx); '
+          'panduan [Verifikasi_Individu.md](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/blob/main/panduan/Verifikasi_Individu.md) dan '
+          '[QnA.md](https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap/blob/main/panduan/QnA.md).'}]

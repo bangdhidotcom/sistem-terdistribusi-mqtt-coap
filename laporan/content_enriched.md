@@ -1,5 +1,10 @@
 # Laporan Akhir: Jembatan Konversi Protokol MQTT dan CoAP
 
+> **Dokumen arsip.** Ini adalah draf awal. Sumber kanonik laporan final adalah
+> `laporan/content.py` yang dirender oleh `laporan/build_laporan.py` menjadi
+> `Laporan_Akhir_Sistem_Terdistribusi.pdf` / `.docx`. Angka dan pembagian kerja di bawah
+> sudah diselaraskan dengan artefak final, tetapi jangan dipakai sebagai sumber build.
+
 ## Ringkasan Eksekutif
 Proyek ini mengimplementasikan *conversion server* dua arah yang menjembatani protokol MQTT dan CoAP untuk memungkinkan pertukaran data perangkat IoT pada jaringan IP konvensional tanpa bantuan SDN.
 
@@ -26,7 +31,7 @@ Enam peran logis beroperasi:
 1.  **MQTT Publisher**: Mengirim data ke topik `iot/mqtt_to_coap` (Port 1883).
 2.  **Conversion Server**: Menunggu pesan MQTT dan meneruskannya ke CoAP `/target` (Port 5683/5684).
 3.  **CoAP Server**: Menampung data pada resource `/target` dan `/source`.
-4.  **CoAP Client**: Melakukan POST ke `/source` (c2m) dan polling GET ke `/target`.
+4.  **CoAP Client**: Melakukan POST ke `/source` (c2m) dan GET `/target` untuk verifikasi (m2c); conversion server melakukan GET `/source` setiap 1 detik.
 5.  **MQTT Subscriber**: Menerima data dari topik `iot/coap_to_mqtt` (Port 1884).
 
 ## Desain Konversi
@@ -47,10 +52,10 @@ Konvensi positif digunakan agar delay selalu menunjukkan durasi yang terukur.
 Data diambil dari 40 run stabil:
 | Arah | Laju (msg/detik) | Rata-rata Conversion Delay (ms) | Rata-rata E2E Delay (ms) |
 | :--- | :--- | :--- | :--- |
-| M2C | 10 | 26.0 | 214.7 |
-| C2M | 10 | 4.5 | 913.6 |
-| M2C | 20 | 19.8 | 269.9 |
-| C2M | 20 | 4.0 | 1142.3 |
+| M2C | 10 | 21.5 | 191.6 |
+| C2M | 10 | 3.9 | 834.5 |
+| M2C | 20 | 21.3 | 278.9 |
+| C2M | 20 | 3.9 | 1126.7 |
 
 ## Analisis
 Delay E2E lebih besar pada arah C2M karena mekanisme polling 1 detik pada CoAP. Payload besar yang menggunakan *blockwise* meningkatkan waktu pemrosesan, namun sistem tetap stabil pada batas beban.
@@ -58,8 +63,8 @@ Delay E2E lebih besar pada arah C2M karena mekanisme polling 1 detik pada CoAP. 
 ## Kesimpulan
 Proyek ini berhasil mendemonstrasikan interoperabilitas MQTT-CoAP melalui *conversion server*.
 **Pembagian Kerja**:
-*   Muhammad Irfan Maulana: Implementasi CoAP Server & Client.
-*   Hadrian Rakha Khosyi Javier: Implementasi MQTT Publisher & Subscriber.
-*   Bambang Adhi Nurbiyanto: Desain Conversion Server & Analisis Eksperimen.
+*   Muhammad Irfan Maulana: Broker, publisher, subscriber, konektivitas.
+*   Hadrian Rakha Khosyi Javier: CoAP server/client, payload.
+*   Bambang Adhi Nurbiyanto: Conversion server, metrik, harness, laporan, slide.
 
 **Sitasi**: Sumadi dkk., TELKOMNIKA 19(5):1544–1552, 2021, DOI 10.12928/TELKOMNIKA.v19i5.20412.

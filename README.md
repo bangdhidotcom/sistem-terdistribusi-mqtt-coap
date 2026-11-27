@@ -38,9 +38,9 @@ slide, diagram editabel, dan panduan sudah tersedia di repositori ini. Seluruh
 4. Slide: `slide/Slide_Presentasi.pptx` (12 slide).
 5. Diagram dan grafik: `output/*.png` + `data/grafik/*.png` (preview 200 DPI) dan
    `output-xml/*.xml` (DrawingML asli berupa `wps:wsp`, tanpa `r:embed`/media tertanam).
-   DOCX laporan memakai XML tersebut sebagai shape editabel (641 elemen `wps:wsp`, 0 media);
+   DOCX laporan memakai XML tersebut sebagai shape editabel (656 elemen `wps:wsp`, 0 media);
    PDF memakai preview PNG. Kumpulan diagram editabel mandiri juga tersedia di
-   `laporan/Diagram_Editabel_Word.docx`. Diagram berasal dari `diagram_specs/`, grafik
+   `laporan/Diagram_Editabel_Word.docx` (644 elemen `wps:wsp`). Diagram berasal dari `diagram_specs/`, grafik
    dari `laporan/chart_shapes.py`; salinan SVG lama tidak dijadikan rujukan.
 6. Panduan: `panduan/Verifikasi_Individu.md`, `panduan/Demo_Cepat.md`,
    `panduan/Panduan_Pengumpulan_LMS.md`, `panduan/QnA.md`. Contoh log per-run ada di

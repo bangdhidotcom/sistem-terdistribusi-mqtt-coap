@@ -4,7 +4,7 @@ Aturan dari screenshot LMS: **kumpulkan satu laporan akhir berformat `.pdf`**. K
 
 ## Langkah
 1. Pastikan `laporan/Laporan_Akhir_Sistem_Terdistribusi.pdf` sudah final (maksimal 10 halaman).
-2. Pastikan seluruh tautan di bagian Lampiran dapat dibuka:
+2. Bagian 10 laporan sudah memuat tautan klik ke seluruh artefak (13 anotasi link di PDF, 12 hyperlink eksternal di DOCX). Pastikan tautannya dapat dibuka:
    - Repo: https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap
    - `data/raw/messages.csv`, `data/summary/summary.csv`, `data/grafik/`
    - `output-xml/` (XML shape Word editabel), `output/` (PNG), `laporan/Diagram_Editabel_Word.docx`
