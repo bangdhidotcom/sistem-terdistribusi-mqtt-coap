@@ -28,7 +28,9 @@ slide, diagram editabel, dan panduan sudah tersedia di repositori ini. Seluruh
 1. Kode: `src/` (6 peran logis), `config/`, `requirements.txt`, `experiments/`, `tests/`.
 2. Laporan teknis: `laporan/Laporan_Akhir_Sistem_Terdistribusi.pdf` (10 halaman) dan
    `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx` (10 halaman). Format A4, Times New
-   Roman 12, margin 2 cm, seluruh teks hitam, tabel bergaris dengan kepala biru muda.
+   Roman 12, margin 2 cm, seluruh teks hitam, teks penjelasan rata kanan-kiri, tabel
+   bergaris dengan kepala biru muda dan isi sel ditengah. Judul tidak memuat kalimat
+   batas pengumpulan (barisnya sengaja dikosongkan).
    Keduanya dibuat dari satu sumber blok `laporan/content.py` oleh
    `laporan/build_laporan.py`. Teks tubuh identik; label di dalam shape editabel tidak
    dihitung dua kali dalam audit kesamaan teks. PDF memakai preview PNG (sifat PDF

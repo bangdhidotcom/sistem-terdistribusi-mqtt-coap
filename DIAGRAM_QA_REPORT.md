@@ -9,9 +9,9 @@
 
 | Diagram | XML Size (bytes) | PNG Size (bytes) | Validated |
 | :--- | :--- | :--- | :--- |
-| `mqtt_coap_architecture` | ~47 KB | ~102 KB | Yes (0 issues) |
-| `flow_mqtt_to_coap` | ~30 KB | ~55 KB | Yes (0 issues) |
-| `flow_coap_to_mqtt` | ~30 KB | ~54 KB | Yes (0 issues) |
+| `mqtt_coap_architecture` | ~49 KB | ~132 KB | Yes (0 issues) |
+| `flow_mqtt_to_coap` | ~30 KB | ~67 KB | Yes (0 issues) |
+| `flow_coap_to_mqtt` | ~30 KB | ~66 KB | Yes (0 issues) |
 
 Catatan alur: Gambar 1 menampilkan `POST /source` dari CoAP client ke CoAP server dan
 `GET /source (1 dtk)` dari conversion server ke CoAP server, sesuai implementasi
@@ -30,3 +30,6 @@ All text colors (22304C) against pastel backgrounds meet the >4.5:1 contrast req
 ## Final Checks
 - All diagrams have passed `validate()` and `report_text_fit()`.
 - No structural overlaps or edge collisions reported.
+- `uml_drawml._text()` kini ikut menskalakan ukuran font bersama koordinat kotak saat
+  membuat versi A4, sehingga label tidak meluap/terpotong. Label diagram dan sumbu
+  grafik juga diperbesar (grafik 6,5&#8211;9,5 pt; diagram A4 5&#8211;8 pt efektif).

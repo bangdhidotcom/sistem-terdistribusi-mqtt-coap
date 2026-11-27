@@ -148,6 +148,7 @@ def table_shape(s, rows, x=0.55, y=1.55, w=12.23, h=4.9, size=11):
             c.margin_left = c.margin_right = Inches(0.06)
             c.vertical_anchor = MSO_ANCHOR.MIDDLE
             for p in c.text_frame.paragraphs:
+                p.alignment = PP_ALIGN.CENTER
                 p.font.name = FONT
                 p.font.size = Pt(size + (0.5 if i == 0 else 0))
                 p.font.bold = i == 0
@@ -172,7 +173,7 @@ for i, (name, nim) in enumerate([
     _rect(s, x, 4.05, 3.85, 1.10, NAVY2, line=RGBColor(70, 92, 132), rounded=True)
     _text(s, name, x + 0.18, 4.18, 3.5, 0.38, size=12.5, bold=True, color=WHITE)
     _text(s, nim, x + 0.18, 4.60, 3.5, 0.30, size=10.5, color=LIGHTBLUE)
-_text(s, "Deadline: 7 Desember 2026, 16.55 WIB   |   " + REPO,
+_text(s, "Repo: " + REPO,
       0.75, 6.55, 11.9, 0.4, size=10, color=LIGHTBLUE)
 
 # ---------------------------------------------------------------- 2 Masalah

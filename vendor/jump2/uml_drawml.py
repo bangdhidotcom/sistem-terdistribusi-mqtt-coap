@@ -149,7 +149,9 @@ class Emitter:
         if box is None:
             return ""
         pad = op.get("pad", 0.0)
-        pt = op["pt"]
+        # Koordinat box ikut diskalakan (self.k); font juga harus ikut, kalau tidak
+        # teks meluap dari kotak yang sudah mengecil saat dibuat versi A4.
+        pt = op["pt"] * self.k
         bold = op.get("bold", False)
         color = op.get("color", "000000")
         align = op.get("align", "center")
@@ -161,7 +163,7 @@ class Emitter:
         nlines = max(len(op["lines"]), 1)
         # Word memotong teks pada batas box -> tinggi konten wajib muat semua
         # baris (line_rule exact = pt*1.22 TIP per baris = *2.54/72 cm).
-        need = nlines * pt * 1.22 * 2.54 / 72.0 + 0.06
+        need = nlines * pt * 1.22 * 2.54 / 72.0 + 0.06 * self.k
         if box.h - 2 * pad < need - 1e-9:
             CLAMPED.append((round(box.h, 3), round(pad, 3), nlines, pt))
         bw = max(box.w - 2 * pad, 0.05)

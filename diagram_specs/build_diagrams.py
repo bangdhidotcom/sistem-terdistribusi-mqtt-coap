@@ -9,23 +9,23 @@ from vendor.jump2.uml_validate import validate, report_text_fit
 
 def build_architecture():
     d = Diagram("Architecture", 26, 17)
-    d.label_at(13, 0.55, "Arsitektur Sistem Replikasi MQTT <-> CoAP", pt=12, bold=True)
+    d.label_at(13, 0.55, "Arsitektur Sistem Replikasi MQTT <-> CoAP", pt=13, bold=True)
 
     # --- 3 swimlane: WAJIB container=True agar validator tidak menganggapnya node.
     # Kanvas tinggi 11 (y 2..13) supaya legenda di bawah tidak menimpa panel.
     d.rrect("side_mqtt", 0.5, 2, 7.5, 11, fill=FILL["panel"],
             line=C["gray"], container=True)
-    d.label_chip(0.5, 1.45, "SISI MQTT (TCP)", pt=9, bold=True,
+    d.label_chip(0.5, 1.45, "SISI MQTT (TCP)", pt=11, bold=True,
                  color=C["white"], fill=C["ink"])
 
     d.rrect("side_conv", 9, 2, 8, 11, fill=FILL["sky"],
             line=C["gray"], container=True)
-    d.label_chip(9, 1.45, "CONVERSION SERVER", pt=9, bold=True,
+    d.label_chip(9, 1.45, "CONVERSION SERVER", pt=11, bold=True,
                  color=C["white"], fill=C["purple_d"])
 
     d.rrect("side_coap", 18, 2, 7.5, 11, fill=FILL["panel"],
             line=C["gray"], container=True)
-    d.label_chip(18, 1.45, "SISI COAP (UDP)", pt=9, bold=True,
+    d.label_chip(18, 1.45, "SISI COAP (UDP)", pt=11, bold=True,
                  color=C["white"], fill=C["ink"])
 
     # --- 6 peran logis sesuai tabel spek (nomor 1..6)
@@ -34,8 +34,8 @@ def build_architecture():
         # badge nomor: dipusatkan tepat di atas kotak
         badge_color = "000000" if color == C["orange_d"] else C["white"]
         d.label_chip(x + w / 2 - 0.20, y - 0.30, str(badge),
-                     pt=9, fill=color, color=badge_color)
-        d.rect(None, x, y + 0.4, w, h - 0.4, text=text, tsize=8.5, bold=True,
+                     pt=10, fill=color, color=badge_color)
+        d.rect(None, x, y + 0.4, w, h - 0.4, text=text, tsize=12, bold=True,
                tcolor="000000")
         return x + w / 2, y + h / 2
 
@@ -54,46 +54,46 @@ def build_architecture():
 
     # --- Jalur 1: MQTT -> CoAP (solid biru)
     d.edge([(6.5, 10.25), (10.75, 7.5)], color=C["blue_d"], lw=2.2,
-           arrow="arrow", label="iot/mqtt_to_coap")
+           arrow="arrow", label="iot/mqtt_to_coap", lsize=10)
     d.edge([(15.25, 7.5), (19.5, 4.25)], color=C["blue_d"], lw=2.2,
-           arrow="arrow", label="POST /target")
+           arrow="arrow", label="POST /target", lsize=10)
 
     # --- Jalur 2: CoAP -> MQTT (putus-putus hijau)
     # Client POST ke CoAP server /source, converter GET /source tiap 1 detik.
     d.edge([(21.75, 9.0), (21.75, 5.5)], color=C["green_d"], lw=2.2,
-           dash="dash", arrow="arrow", label="POST /source")
+           dash="dash", arrow="arrow", label="POST /source", lsize=10)
     d.edge([(15.25, 8.5), (19.5, 5.0)], color=C["green_d"], lw=2.2,
-           dash="dash", arrow="arrow", label="GET /source (1 dtk)", lsize=7)
+           dash="dash", arrow="arrow", label="GET /source (1 dtk)", lsize=10)
     d.edge([(10.75, 7.5), (6.5, 7.25)], color=C["green_d"], lw=2.2,
-           dash="dash", arrow="arrow", label="iot/coap_to_mqtt")
+           dash="dash", arrow="arrow", label="iot/coap_to_mqtt", lsize=10)
 
     # --- Dedup / anti-loop: self-loop di sisi bawah Conversion Server.
     # Diletakkan di bawah p3 karena jalur atas/kanan/kiri sudah dilewati edge lain
     # (kalau tidak, validator melaporkan EDGE-CROSS).
     d.edge([(12.0, 10.0), (12.0, 11.2), (13.5, 11.2), (13.5, 10.0)],
            color=C["purple_d"], lw=1.8, dash="dash", arrow="arrow",
-           label="dedup + anti-loop", lsize=7)
+           label="dedup + anti-loop", lsize=10)
 
     # --- Legenda (container, agar tidak ikut diperiksa sebagai node)
     d.rrect("leg", 1, 13.5, 24, 2.9, fill=C["white"],
             line=C["gray"], container=True)
 
     # baris 1: kunci warna + kunci gaya garis
-    d.label_at(2.4, 14.15, "Legenda", pt=8.5, bold=True)
+    d.label_at(2.4, 14.15, "Legenda", pt=11, bold=True)
     d.rect(None, 4.0, 14.0, 0.55, 0.30, fill=C["blue_d"])
-    d.label_at(6.9, 14.15, "Jalur MQTT -> CoAP (solid)", pt=7.5)
+    d.label_at(6.9, 14.15, "Jalur MQTT -> CoAP (solid)", pt=10)
     d.rect(None, 9.0, 14.0, 0.55, 0.30, fill=C["green_d"])
-    d.label_at(12.4, 14.15, "Jalur CoAP -> MQTT (putus-putus)", pt=7.5)
+    d.label_at(12.4, 14.15, "Jalur CoAP -> MQTT (putus-putus)", pt=10)
     d.rect(None, 14.7, 14.0, 0.55, 0.30, fill=C["purple_d"])
-    d.label_at(17.8, 14.15, "dedup / anti-loop", pt=7.5)
+    d.label_at(17.8, 14.15, "dedup / anti-loop", pt=10)
 
     # baris 2: kunci badge + footer larangan spek
     d.circle(2.4, 15.4, 0.20, fill=C["blue_d"], line=C["blue_d"])
-    d.label_at(2.4, 15.4, "1", pt=7, bold=True, color=C["white"])
-    d.label_at(5.4, 15.4, "= nomor komponen sesuai tabel spek", pt=7.5)
+    d.label_at(2.4, 15.4, "1", pt=9, bold=True, color=C["white"])
+    d.label_at(5.4, 15.4, "= nomor komponen sesuai tabel spek", pt=10)
     d.label_at(17.6, 15.4,
                "IP konvensional - tanpa SDN / OpenFlow / RYU / Mininet / OVS",
-               pt=7.5, color=C["muted"])
+               pt=9, color=C["muted"])
 
     return d
 

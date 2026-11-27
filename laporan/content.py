@@ -7,8 +7,7 @@ sama, sehingga kedua dokumen tidak mungkin berbeda isinya.
 BLOCKS = [{'type': 'title',
   'text': 'LAPORAN AKHIR SISTEM TERDISTRIBUSI',
   'sub': 'Replikasi Conversion Server MQTT &#8596; CoAP pada Jaringan IP Konvensional<br>Mata '
-         'Kuliah Sistem Terdistribusi A &#8212; Kelompok 3<br>Batas pengumpulan 7 Desember 2026 '
-         'pukul 16.55 WIB'},
+         'Kuliah Sistem Terdistribusi A &#8212; Kelompok 3<br>'},
  {'type': 'h2', 'text': 'Data Kelompok'},
  {'type': 'table',
   'header': ['No', 'Nama', 'NIM', 'Fokus utama'],

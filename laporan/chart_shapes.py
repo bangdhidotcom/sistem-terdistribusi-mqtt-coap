@@ -48,7 +48,7 @@ def load_data() -> pd.DataFrame:
 
 def base(title: str) -> Diagram:
     d = Diagram(title, W, H)
-    d.label_at(W / 2, 0.5, title, pt=7.5, bold=True, color="000000")
+    d.label_at(W / 2, 0.5, title, pt=9.5, bold=True, color="000000")
     return d
 
 
@@ -62,8 +62,8 @@ def frame(d: Diagram, ymax: float, unit: str, ticks: int = 4) -> None:
             d.seg((PLOT_L, y), (PLOT_R, y), color="E6EBF2", lw=0.5)
         d.seg((PLOT_L - 0.10, y), (PLOT_L, y), color="000000", lw=0.8)
         d.label_at(PLOT_L - 0.75, y, f"{v:,.0f}".replace(",", "."),
-                   pt=5, color="000000")
-    d.label_at(1.0, PLOT_T - 0.35, unit, pt=5.5, bold=True, color="000000")
+                   pt=7.5, color="000000")
+    d.label_at(1.0, PLOT_T - 0.35, unit, pt=8, bold=True, color="000000")
 
 
 def legend(d: Diagram, entries, y: float = 8.25) -> None:
@@ -71,7 +71,7 @@ def legend(d: Diagram, entries, y: float = 8.25) -> None:
     for i, (color, text) in enumerate(entries):
         x = 1.1 + i * step
         d.rect(None, x, y - 0.09, 0.32, 0.18, fill=color, line=color)
-        d.label_at(x + 1.05, y, text, pt=5.2, color="000000")
+        d.label_at(x + 1.05, y, text, pt=7.5, color="000000")
 
 
 def save(d: Diagram, name: str, doc_id: int) -> None:
@@ -103,12 +103,12 @@ def timeseries(df: pd.DataFrame, col: str, title: str, unit: str,
             d.circle(x, y, 0.045, fill=color, line=color)
     for idx in (1, 3, 5, 7, 9, 11):
         x = PLOT_L + (idx - 1) * (PLOT_R - PLOT_L) / 10
-        d.label_at(x, PLOT_B + 0.32, str(idx), pt=5, color="000000")
-    d.label_at((PLOT_L + PLOT_R) / 2, PLOT_B + 0.70,
-               "Indeks bucket (1 sampai 11)", pt=5.2, color="000000")
+        d.label_at(x, PLOT_B + 0.34, str(idx), pt=7.5, color="000000")
+    d.label_at((PLOT_L + PLOT_R) / 2, PLOT_B + 0.74,
+               "Indeks bucket (1 sampai 11)", pt=8, color="000000")
     legend(d, [(c, t) for _, _, c, t in SERIES])
-    d.label_at(13.1, 0.90, "11 bucket = 600 detik melintang batas menit",
-               pt=4.5, color="000000")
+    d.label_at(13.1, 0.92, "11 bucket = 600 detik melintang batas menit",
+               pt=6.5, color="000000")
     save(d, name, doc_id)
 
 
@@ -129,12 +129,12 @@ def comparison(name: str, doc_id: int) -> None:
             h = max(value / 100 * (PLOT_B - PLOT_T), 0.03)
             x = cx + off - 0.28
             d.rect(None, x, PLOT_B - h, 0.56, h, fill=color, line=color)
-            d.label_at(cx + off, PLOT_B - h - 0.24, f"{value:.2f}",
-                       pt=5, color="000000")
-        d.label_at(cx, PLOT_B + 0.34, label, pt=5.3, bold=True, color="000000")
+            d.label_at(cx + off, PLOT_B - h - 0.30, f"{value:.2f}",
+                       pt=7.5, color="000000")
+        d.label_at(cx, PLOT_B + 0.36, label, pt=8, bold=True, color="000000")
     legend(d, [("777777", "Artikel acuan"), ("2A5FD4", "Replikasi kami")])
-    d.label_at(11.9, 0.90, "Sumber: Tabel 2.2 dan Tabel 6.2",
-               pt=4.5, color="000000")
+    d.label_at(11.9, 0.92, "Sumber: Tabel 2.2 dan Tabel 6.2",
+               pt=6.5, color="000000")
     save(d, name, doc_id)
 
 

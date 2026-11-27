@@ -20,24 +20,24 @@ FORMULA = ("delay konversi = conv_send_ts - conv_recv_ts   |   "
 
 
 def _head(d, title):
-    d.label_at(CANVAS_W / 2, 0.5, title, pt=10.5, bold=True)
-    d.label_at(CANVAS_W / 2, 1.45, FORMULA, pt=7, bold=True,
+    d.label_at(CANVAS_W / 2, 0.5, title, pt=12, bold=True)
+    d.label_at(CANVAS_W / 2, 1.45, FORMULA, pt=8.5, bold=True,
                color=C["muted"], fill=C["paper"])
 
 
 def _lifelines(d, names, color, fill):
     for x, name in zip(XS, names):
-        d.lifeline(name, x, TOP, BOTTOM, 4, name, color, fill)
+        d.lifeline(name, x, TOP, BOTTOM, 4, name, color, fill, tsize=10)
 
 
 def _legend(d, acc):
     y = 12.55
     d.rect(None, 1.0, y - 0.13, 0.5, 0.26, fill=acc)
-    d.label_at(3.7, y, "pesan antar-peran (arah = arah data)", pt=7)
+    d.label_at(3.7, y, "pesan antar-peran", pt=9)
     d.rect(None, 6.3, y - 0.13, 0.5, 0.26, fill=C["purple_d"])
-    d.label_at(9.2, y, "aksi internal (validasi/dedup/antrean)", pt=7)
-    d.label_at(14.5, y, "payload: id, seq, sent_ts, sha256", pt=7)
-    d.label_at(18.6, y, "nomor 1-6 = urutan tahap", pt=7)
+    d.label_at(9.2, y, "aksi internal (dedup)", pt=9)
+    d.label_at(14.5, y, "payload: id, ts, sha256", pt=9)
+    d.label_at(18.6, y, "nomor 1-6 = urutan", pt=9)
 
 
 def _draw(d, acc, steps):
@@ -48,13 +48,13 @@ def _draw(d, acc, steps):
             sx = x1 + (0.45 if x2 > x1 else -0.45)
             ex = x2 + (-0.45 if x2 > x1 else 0.45)
             d.edge([(sx, y), (ex, y)], color=acc, lw=1.9,
-                   arrow="arrow", label=txt, lsize=7)
+                   arrow="arrow", label=txt, lsize=10)
         else:
             # self-message: loop ke KIRI dari sumbu, label chip di KANAN sumbu
             x = XS[a]
             d.edge([(x, y), (x - 1.8, y), (x - 1.8, y + 0.5), (x, y + 0.5)],
                    color=C["purple_d"], lw=1.7, arrow="arrow")
-            d.label_chip(x + 0.35, y + 0.11, txt, pt=7, fill=C["paper"])
+            d.label_chip(x + 0.35, y + 0.11, txt, pt=10, fill=C["paper"])
 
 
 def build_flow_m2c():

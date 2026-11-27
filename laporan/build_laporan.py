@@ -152,6 +152,7 @@ def _shade(cell, hex_color: str) -> None:
 def _set_cell_text(cell, text: str, bold=False, size=10) -> None:
     cell.text = ""
     p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     add_rich(p, text)
     for r in p.runs:
         r.bold = bold or r.bold
@@ -210,12 +211,14 @@ def _style_docx(doc: Document) -> None:
     normal.font.color.rgb = RGBColor(0, 0, 0)
     normal.paragraph_format.space_after = Pt(4)
     normal.paragraph_format.line_spacing = 0.95
+    normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     for name, size in (("Title", 16), ("Heading 1", 13), ("Heading 2", 12)):
         st = doc.styles[name]
         st.font.name = "Times New Roman"
         st.font.size = Pt(size)
         st.font.color.rgb = RGBColor(0, 0, 0)
         st.font.bold = True
+        st.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
 
 def _img_size(path: Path, width_cm: float) -> float:
@@ -275,7 +278,8 @@ def build_pdf() -> int:
     st.add(ParagraphStyle("Body", parent=st["BodyText"], fontName=FONT, fontSize=12,
                           leading=13.2, alignment=TA_JUSTIFY, textColor=BLACK, spaceAfter=3))
     st.add(ParagraphStyle("List", parent=st["BodyText"], fontName=FONT, fontSize=11.5,
-                          leading=13, leftIndent=12, textColor=BLACK, spaceAfter=2))
+                          leading=13, alignment=TA_JUSTIFY, leftIndent=12,
+                          textColor=BLACK, spaceAfter=2))
     st.add(ParagraphStyle("Cap", parent=st["Normal"], fontName=FONT_I, fontSize=9.5,
                           leading=11.5, alignment=TA_CENTER, textColor=BLACK, spaceAfter=3))
     st.add(ParagraphStyle("CallTitle", parent=st["Normal"], fontName=FONT_B, fontSize=11,
@@ -304,6 +308,7 @@ def build_pdf() -> int:
                   repeatRows=0, hAlign="CENTER")
         style = [
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
             ("LEFTPADDING", (0, 0), (-1, -1), 3),
             ("RIGHTPADDING", (0, 0), (-1, -1), 3),
             ("TOPPADDING", (0, 0), (-1, -1), 2.5),
