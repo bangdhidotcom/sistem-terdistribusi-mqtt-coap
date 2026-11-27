@@ -68,7 +68,9 @@ def _pre(text: str) -> str:
 
 def inline_pdf(text: str) -> str:
     s = _pre(text)
-    s = LINK_RE.sub(lambda m: "<link href='%s'>%s</link>" % (m.group(2), m.group(1)), s)
+    s = LINK_RE.sub(
+        lambda m: "<link href='%s'><font color='#0563C1'>%s</font></link>"
+                  % (m.group(2), m.group(1)), s)
     return s.replace("<br>", "<br/>")
 
 
@@ -89,7 +91,7 @@ def _docx_hyperlink(paragraph, text: str, url: str) -> None:
     sz = OxmlElement("w:sz")
     sz.set(qn("w:val"), "24")
     color = OxmlElement("w:color")
-    color.set(qn("w:val"), "000000")
+    color.set(qn("w:val"), "0563C1")
     underline = OxmlElement("w:u")
     underline.set(qn("w:val"), "single")
     r_pr.append(rfonts)
@@ -375,6 +377,7 @@ def build_pdf() -> int:
             cw = CONTENT_W / len(cells)
             row = Table([[c for c in cells]], colWidths=[cw * cm] * len(cells), hAlign="CENTER")
             row.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"),
+                                     ("ALIGN", (0, 0), (-1, -1), "CENTER"),
                                      ("LEFTPADDING", (0, 0), (-1, -1), 2),
                                      ("RIGHTPADDING", (0, 0), (-1, -1), 2)]))
             elems.append(KeepTogether([row]))
@@ -436,6 +439,7 @@ def build_docx() -> tuple[int, int]:
         elif kind == "glossary":
             t = doc.add_table(rows=1, cols=2)
             t.style = None
+            t.alignment = WD_TABLE_ALIGNMENT.CENTER
             for i, h in enumerate(["Istilah", "Arti sederhana"]):
                 _set_cell_text(t.rows[0].cells[i], h, bold=True, size=10)
             for a, c in b["items"]:
