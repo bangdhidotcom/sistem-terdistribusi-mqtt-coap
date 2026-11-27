@@ -1,92 +1,58 @@
-﻿# Sistem Terdistribusi - Konversi MQTT <-> CoAP
+﻿# Sistem Terdistribusi — Konversi MQTT ↔ CoAP
 
-Tugas Project Kelompok, Fakultas Teknik Informatika, Universitas Muhammadiyah Malang.
-Semester Ganjil 2026/2027 - Kelas Sistem Terdistribusi A.
+Tugas project kelompok, Fakultas Teknik Informatika, Universitas Muhammadiyah Malang.
+Semester Ganjil 2026/2027 — Kelas Sistem Terdistribusi A.
 
 ## Topik
 
 Replikasi gagasan utama artikel Sumadi dkk. (TELKOMNIKA 19(5), 2021,
 DOI 10.12928/TELKOMNIKA.v19i5.20412) berupa **conversion server dua arah
-MQTT <-> CoAP** pada jaringan IP konvensional. Tidak memakai SDN, OpenFlow,
+MQTT ↔ CoAP** pada jaringan IP konvensional. Tidak memakai SDN, OpenFlow,
 RYU, Mininet, maupun Open vSwitch.
 
 ## Anggota kelompok
 
-- Muhammad Irfan Maulana - 202310370311480
-- Hadrian Rakha Khosyi Javier - 202310370311483
-- Bambang Adhi Nurbiyanto - 202310370311484
+- Muhammad Irfan Maulana — 202310370311480
+- Hadrian Rakha Khosyi Javier — 202310370311483
+- Bambang Adhi Nurbiyanto — 202310370311484
 
-## Status
+## Isi repository
 
-Tahap akhir. Kode, konfigurasi, skrip eksperimen, data, laporan **PDF dan DOCX**,
-slide, diagram editabel, dan panduan sudah tersedia di repositori ini. Seluruh
-40 run valid: 290.107 pesan terkirim, 99,815% terverifikasi
-(`data/summary/summary.csv`, `data/metrics.json`).
+- `src/` — enam peran logis: publisher, broker, subscriber, conversion server,
+  CoAP server, dan CoAP client.
+- `config/`, `requirements.txt` — konfigurasi dan dependensi.
+- `experiments/` — generator payload, runner matriks eksperimen, dan peringkas hasil.
+- `tests/` — pengujian unit dan integrasi dua arah.
+- `data/raw/`, `data/summary/summary.csv`, `data/metrics.json` — data mentah dan
+  ringkasan 40 run.
+- `data/grafik/` — grafik hasil eksperimen.
+- `laporan/Laporan_Akhir_Sistem_Terdistribusi.pdf` (10 halaman) dan
+  `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx` (10 halaman, tujuh shape
+  DrawingML editabel), serta `laporan/Diagram_Editabel_Word.docx`.
+- `output-xml/` dan `output/` — sumber diagram/grafik editabel dan preview PNG.
+- `slide/Slide_Presentasi.pptx` — 12 slide presentasi.
+- `panduan/Demo_Cepat.md` dan `panduan/Verifikasi_Individu.md` — alur demo dan
+  verifikasi per anggota.
+- `scripts/` — pembantu proses demo dan healthcheck.
 
-## Luaran
+## Hasil ringkas
 
-1. Kode: `src/` (6 peran logis), `config/`, `requirements.txt`, `experiments/`, `tests/`.
-2. Laporan teknis: `laporan/Laporan_Akhir_Sistem_Terdistribusi.pdf` (10 halaman) dan
-   `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx` (10 halaman). Format A4, Times New
-   Roman 12, margin 2 cm, seluruh teks hitam, teks penjelasan rata kanan-kiri, tabel
-   bergaris dengan kepala biru muda dan isi sel ditengah. Judul tidak memuat kalimat
-   batas pengumpulan (barisnya sengaja dikosongkan).
-   Keduanya dibuat dari satu sumber blok `laporan/content.py` oleh
-   `laporan/build_laporan.py`. Teks tubuh identik; label di dalam shape editabel tidak
-   dihitung dua kali dalam audit kesamaan teks. PDF memakai preview PNG (sifat PDF
-   fixed-layout), sedangkan DOCX menyisipkan tujuh **shape DrawingML editabel**.
-3. Data: `data/raw/messages.csv`, `data/summary/summary.csv` (440 baris x 18 kolom),
-   `data/grafik/*.png`.
-4. Slide: `slide/Slide_Presentasi.pptx` (12 slide).
-5. Diagram dan grafik: `output/*.png` + `data/grafik/*.png` (preview 200 DPI) dan
-   `output-xml/*.xml` (DrawingML asli berupa `wps:wsp`, tanpa `r:embed`/media tertanam).
-   DOCX laporan memakai XML tersebut sebagai shape editabel (656 elemen `wps:wsp`, 0 media);
-   PDF memakai preview PNG. Kumpulan diagram editabel mandiri juga tersedia di
-   `laporan/Diagram_Editabel_Word.docx` (644 elemen `wps:wsp`). Diagram berasal dari `diagram_specs/`, grafik
-   dari `laporan/chart_shapes.py`; salinan SVG lama tidak dijadikan rujukan.
-6. Panduan: `panduan/Verifikasi_Individu.md`, `panduan/Demo_Cepat.md`,
-   `panduan/Panduan_Pengumpulan_LMS.md`, `panduan/QnA.md`. Contoh log per-run ada di
-   `data/bukti_konektivitas/`; log JSONL lengkap (~263 MB) sengaja di-ignore dan dapat
-   diregenerasi dengan perintah di `panduan/Verifikasi_Individu.md`.
+Seluruh 40 run valid: 290.107 pesan terkirim dengan 99,815% terverifikasi.
+Rincian per arah dan laju ada di `data/summary/summary.csv`.
 
-## Sumber tunggal folder
-
-Satu-satunya folder proyek yang aktif adalah folder repositori ini
-(`D:\Sistem Terdistribusi\project\sistem-terdistribusi-mqtt-coap`). Folder induk
-`D:\Sistem Terdistribusi\project` hanya menyimpan dokumen sumber tugas
-(`Tugas Project Sistem Terdistribusi.pdf`) dan catatan data (`data.txt`).
-Salinan lama `config/`, `src/`, `experiments/`, `output/`, dll. di folder induk
-adalah artefak staging dari sesi pembuatan diagram awal dan sudah dihapus agar
-tidak ada dua versi kode yang membingungkan. Repository GitHub juga hanya
-berisi satu salinan per path — tidak ada duplikat struktur di remote.
-
-## Cara menjalankan
+## Menjalankan ulang pengujian
 
 ```powershell
 python experiments/payload_gen.py --size 4096 --out data/payload_4096.bin
-# Smoke test singkat (kampanye penuh 40 run sudah selesai, jangan dijalankan ulang):
 python experiments/run_matrix.py --duration 15 --reps 1 --rate 10 --direction both --payload-size 4096
 python experiments/summarize.py
-python diagram_specs/build_diagrams.py
-python diagram_specs/spec_flow.py
-python experiments/plotting.py       # = laporan/chart_shapes.py, XML + PNG satu sumber
-python laporan/build_docx.py
-python laporan/build_laporan.py
-python slide/build_slides.py
 python -m unittest discover -s tests
 ```
 
-Urutan regenerasi di atas wajib berurutan: diagram → grafik editabel → DOCX → PDF → slide.
-`laporan/build_laporan.py` menghasilkan PDF dan DOCX sekaligus, lalu mencetak rasio
-kesamaan teks (label shape dikecualikan). Verifikasi akhir: PDF 10 halaman, DOCX 10
-halaman, 7 shape editabel di DOCX, slide 12. `laporan/build_report.py` adalah pembuat
-laporan versi lama yang menimpa path PDF yang sama dan menghasilkan gambar statis —
-**jangan dijalankan**. Satu-satunya sumber kanonik adalah `laporan/content.py` lewat
-`laporan/build_laporan.py`; file lama dibiarkan hanya sebagai arsip, bukan entry point.
+Kampanye penuh 40 run (dua arah × dua laju × sepuluh pengulangan × sepuluh
+menit) sudah selesai dan tidak perlu diulang. Untuk sesi demo singkat, ikuti
+`panduan/Demo_Cepat.md`.
 
-Kampanye penuh: 40 run (40 valid) = dua arah x dua laju x 10 pengulangan x 10 menit.
-Payload kampanye 4 KB; uji tambahan 200 KB blockwise tersedia lewat `--payload-size 204800`.
-
-## Link
+## Tautan
 
 https://github.com/bangdhidotcom/sistem-terdistribusi-mqtt-coap

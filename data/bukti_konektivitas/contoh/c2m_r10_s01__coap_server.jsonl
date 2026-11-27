@@ -1,7 +1,0 @@
-{"ts":1795663446.7656982,"event":"COAP_READY","host":"127.0.0.1","port":5684}
-{"ts":1795663447.2123144,"event":"POST_OK","id":"34fef024-ef4b-440c-a0a1-3c2f914c0b9f","seq":1,"direction":"c2m","extra":{"resource":"/source","size":5797}}
-{"ts":1795663447.3507786,"event":"POST_OK","id":"bddbc065-858c-4924-b3d5-1f29d86ec4c8","seq":2,"direction":"c2m","extra":{"resource":"/source","size":5797}}
-{"ts":1795663447.4905899,"event":"POST_OK","id":"1b46ef8a-23b7-4eec-8683-c51e5031a8f8","seq":3,"direction":"c2m","extra":{"resource":"/source","size":5797}}
-{"ts":1795663447.7554731,"event":"GET_OK","count":4,"extra":{"resource":"/source"}}
-{"ts":1795663448.8906207,"event":"GET_OK","count":9,"extra":{"resource":"/source"}}
-{"ts":1795663450.1708212,"event":"GET_OK","count":10,"extra":{"resource":"/source"}}

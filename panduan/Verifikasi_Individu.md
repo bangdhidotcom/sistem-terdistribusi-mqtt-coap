@@ -21,7 +21,7 @@ Tujuan: dosen dapat menilai kontribusi masing-masing anggota (30% dari nilai) de
 1. Jalankan urutan: broker → CoAP server → conversion server.
 2. Cek `CONV_READY`, `CONV_IN`, `CONV_OUT` di `data\raw\conversion_server.jsonl`.
 3. Smoke: `python experiments\run_matrix.py --duration 15 --reps 1 --rate 10 --direction both --payload-size 4096`.
-4. Ringkas: `python experiments\summarize.py` dan `python experiments\plotting.py`.
+4. Ringkas: `python experiments\summarize.py`; grafik tersedia di `data\grafik\`.
 5. Bukti: `data\raw\messages.csv`, `data\summary\summary.csv`, `data\grafik\*.png`.
 
 ## Kriteria lulus

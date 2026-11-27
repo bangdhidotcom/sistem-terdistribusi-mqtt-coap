@@ -19,3 +19,21 @@ data/supervisor_pid.txt
 data/final_retry_pid.txt
 data/perfect_pid.txt
 data/*done*.txt
+
+# Alat pembangun artefak, draf, dan catatan internal: dipakai lokal saja,
+# tidak dipublikasikan ke repository GitHub.
+DIAGRAM_QA_REPORT.md
+diagram_specs/
+vendor/jump2/
+laporan/*.py
+laporan/content_enriched.md
+slide/build_slides.py
+experiments/plotting.py
+experiments/rerun_failed.py
+panduan/Panduan_Pengumpulan_LMS.md
+panduan/QnA.md
+scripts/final_retry.ps1
+scripts/perfect_run.ps1
+scripts/rerun_and_finalize.ps1
+tests/debug_broker.py
+data/bukti_konektivitas/

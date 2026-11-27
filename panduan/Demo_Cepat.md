@@ -68,8 +68,8 @@ powershell -File scripts\stop_all.ps1
 
 1. Cek healthcheck: `python scripts\healthcheck.py`.
 2. Cek baris `ERROR` di file JSONL yang bersangkutan.
-3. Tunjukkan bukti cadangan yang sudah ada di `data/bukti_konektivitas/contoh/`
-   dan data lengkap di `data/raw/messages.csv` + `data/summary/summary.csv`.
+3. Tunjukkan bukti cadangan di `data/raw/messages.csv` dan
+   `data/summary/summary.csv`.
 4. Jangan mengulang kampanye 40 run; hasil final sudah tervalidasi seluruhnya.
 
 ## Pembagian narasi (2 + 3 + 5 + 3 menit)

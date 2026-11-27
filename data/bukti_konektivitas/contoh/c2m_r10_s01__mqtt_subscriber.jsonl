@@ -1,3 +1,0 @@
-{"ts":1795663447.8415673,"event":"DELIVER","id":"34fef024-ef4b-440c-a0a1-3c2f914c0b9f","seq":1,"direction":"c2m","latency_ms":655.8656692504883,"extra":{"verified":true,"topic":"iot/coap_to_mqtt","dst_recv_ts":1795663447.8404028,"sent_ts":1795663447.1845372}}
-{"ts":1795663447.849782,"event":"DELIVER","id":"bddbc065-858c-4924-b3d5-1f29d86ec4c8","seq":2,"direction":"c2m","latency_ms":521.458625793457,"extra":{"verified":true,"topic":"iot/coap_to_mqtt","dst_recv_ts":1795663447.848645,"sent_ts":1795663447.3271863}}
-{"ts":1795663447.8595426,"event":"DELIVER","id":"1b46ef8a-23b7-4eec-8683-c51e5031a8f8","seq":3,"direction":"c2m","latency_ms":389.2197608947754,"extra":{"verified":true,"topic":"iot/coap_to_mqtt","dst_recv_ts":1795663447.8583262,"sent_ts":1795663447.4691064}}
