@@ -1,0 +1,3 @@
+{"ts":1795663446.7228436,"event":"PUBLISH","id":"4f735593-e3c3-41c0-9eea-bded3489060d","seq":1,"direction":"m2c","extra":{"topic":"iot/mqtt_to_coap","sent_ts":1795663446.7193062,"payload_size":4096}}
+{"ts":1795663446.835868,"event":"PUBLISH","id":"df6c01f1-d732-4807-a3c2-5c296c4abd3c","seq":2,"direction":"m2c","extra":{"topic":"iot/mqtt_to_coap","sent_ts":1795663446.8334074,"payload_size":4096}}
+{"ts":1795663446.949165,"event":"PUBLISH","id":"b1c4c2de-1aee-4efa-bdc6-86350d581bae","seq":3,"direction":"m2c","extra":{"topic":"iot/mqtt_to_coap","sent_ts":1795663446.9467306,"payload_size":4096}}

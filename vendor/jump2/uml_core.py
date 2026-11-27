@@ -2,10 +2,31 @@
 """Core model for JUMP2 UML diagrams: palette, metrics, geometry, primitives."""
 import os
 import math
+import platform
 from PIL import ImageFont
 
 EMU_PER_CM = 360000
-FONT_DIR = r"C:\Windows\Fonts"
+
+
+def _default_font_dir():
+    """Direktori font: override env, lalu path sesuai OS (Windows tetap C:\\Windows\\Fonts)."""
+    override = os.environ.get("JUMP2_FONT_DIR")
+    if override:
+        return override
+    if os.name == "nt":
+        return os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
+    if platform.system() == "Darwin":
+        return "/System/Library/Fonts"
+    for candidate in ("/usr/share/fonts/truetype/msttcorefonts",
+                      "/usr/share/fonts/truetype/liberation",
+                      "/usr/share/fonts/truetype/dejavu",
+                      "/usr/share/fonts"):
+        if os.path.isdir(candidate):
+            return candidate
+    return "/usr/share/fonts"
+
+
+FONT_DIR = _default_font_dir()
 
 C = {
     "ink": "22304C", "blue": "3A7BFD", "blue_d": "2A5FD4",
@@ -28,11 +49,28 @@ FILL = {
 _fc = {}
 
 
+def _font_path(bold):
+    """Pakai Segoe UI bila tersedia; fallback ke font sans umum di OS lain."""
+    name = "segoeuib.ttf" if bold else "segoeui.ttf"
+    primary = os.path.join(FONT_DIR, name)
+    if os.path.isfile(primary):
+        return primary
+    fallback = "DejaVuSans-Bold.ttf" if bold else "DejaVuSans.ttf"
+    fallback2 = "LiberationSans-Bold.ttf" if bold else "LiberationSans-Regular.ttf"
+    roots = [FONT_DIR, "/usr/share/fonts/truetype/dejavu",
+             "/usr/share/fonts/truetype/liberation"]
+    for root in roots:
+        for candidate in (fallback, fallback2):
+            path = os.path.join(root, candidate)
+            if os.path.isfile(path):
+                return path
+    return primary  # biarkan PIL memberi error yang jelas bila font tidak ada
+
+
 def _font(pt, bold=False, dpi=300):
     key = (round(pt, 2), bool(bold), int(dpi))
     if key not in _fc:
-        name = "segoeuib.ttf" if bold else "segoeui.ttf"
-        _fc[key] = ImageFont.truetype(os.path.join(FONT_DIR, name),
+        _fc[key] = ImageFont.truetype(_font_path(bold),
                                       int(round(pt / 72.0 * float(dpi))))
     return _fc[key]
 

@@ -30,17 +30,22 @@ slide, diagram editabel, dan panduan sudah tersedia di repositori ini. Seluruh
    `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx`. Format A4, Times New Roman 12,
    margin 2 cm, seluruh teks hitam, tanpa garis pembatas antar bagian. Keduanya dibuat
    dari satu sumber blok `laporan/content.py` oleh `laporan/build_laporan.py`.
-   Kesamaan teks otomatis ≈94,6%: selisihnya adalah label di dalam 7 shape editabel
-   yang tidak bisa diekstrak sebagai teks dari PDF raster.
+   Kesamaan teks 100% (audit `w:t` DOCX terhadap teks PDF). Laporan memakai preview PNG
+   agar label diagram tidak terhitung dua kali; versi shape editabel disimpan terpisah
+   di `laporan/Diagram_Editabel_Word.docx`.
 3. Data: `data/raw/messages.csv`, `data/summary/summary.csv` (440 baris x 18 kolom),
    `data/grafik/*.png`.
 4. Slide: `slide/Slide_Presentasi.pptx` (12 slide).
 5. Diagram dan grafik: `output/*.png` + `data/grafik/*.png` (preview 200 DPI) dan
-   `output-xml/*.xml` (7 shape Word editabel, DrawingML asli tanpa `r:embed` / media
-   tertanam). Kedua DOCX — laporan dan `laporan/Diagram_Editabel_Word.docx` —
-   menyisipkan 7 shape tersebut, bukan bitmap. Diagram berasal dari `diagram_specs/`,
-   grafik dari `laporan/chart_shapes.py`; salinan SVG lama tidak dijadikan rujukan.
-6. Panduan: `panduan/Verifikasi_Individu.md`, `Panduan_Pengumpulan_LMS.md`, `QnA.md`.
+   `output-xml/*.xml` (DrawingML asli berupa `wps:wsp`, tanpa `r:embed`/media tertanam).
+   DOCX laporan dan PDF menyisipkan **preview PNG**; dokumen yang memuat shape editabel
+   adalah `laporan/Diagram_Editabel_Word.docx` (1.282 `wps:wsp`, 0 media). Diagram
+   berasal dari `diagram_specs/`, grafik dari `laporan/chart_shapes.py`; salinan SVG
+   lama tidak dijadikan rujukan.
+6. Panduan: `panduan/Verifikasi_Individu.md`, `panduan/Demo_Cepat.md`,
+   `panduan/Panduan_Pengumpulan_LMS.md`, `panduan/QnA.md`. Contoh log per-run ada di
+   `data/bukti_konektivitas/`; log JSONL lengkap (~263 MB) sengaja di-ignore dan dapat
+   diregenerasi dengan perintah di `panduan/Verifikasi_Individu.md`.
 
 ## Sumber tunggal folder
 

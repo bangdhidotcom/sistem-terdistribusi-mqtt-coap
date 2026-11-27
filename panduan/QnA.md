@@ -24,6 +24,9 @@ A: 200 KB diuji berhasil dengan blockwise, tetapi throughput turun ke sekitar 1 
 **Q: Apakah laju 20 msg/s benar-benar tercapai?**
 A: Laju dikonfigurasi 20 msg/s. Throughput aktual tercatat di CSV dan dibahas di laporan; aiocoap pada mesin uji menjadi batas praktis.
 
+**Q: Kolom `payload_sha256` di `messages.csv` kok kosong?**
+A: Kolom itu disiapkan sebagai tempat penulisan nilai hash, tetapi `summarize.py` mengosongkannya. Verifikasi integritas terjadi saat runtime: `src/mqtt_subscriber.py` dan `src/coap_client.py` menghitung ulang SHA-256 dan menulis `verified:true` atau `verified:false` ke log JSONL per-run. Dari 290.107 pesan, 289.571 ber-`verified:true` dan tidak ada satu pun `verified:false`, sehingga klaim di laporan tetap benar. Contoh log ada di `data/bukti_konektivitas/`.
+
 **Q: Bagaimana delay konversi dihitung?**
 A: `(conv_send_ts − conv_recv_ts) × 1000` ms. Spesifikasi menuliskan selisih terbalik; laporan mencatat penyesuaian ini agar bernilai positif.
 
@@ -32,7 +35,10 @@ A: Artikel memakai OpenFlow dan definisi timestamp yang tampak tidak konsisten (
 
 ## Luaran
 **Q: Di mana diagram editabelnya?**
-A: `output-xml/*.xml` berisi `<w:drawing>` dengan `wps:wsp`/`wpg:wgp` native Word (tanpa `r:embed`). `output/*.png` adalah render 200 dpi dari display list yang sama.
+A: `output-xml/*.xml` berisi `<w:drawing>` dengan `wps:wsp`/`wpg:wgp` native Word (tanpa `r:embed`). `output/*.png` adalah render 200 dpi dari display list yang sama. Dokumen Word yang benar-benar editabel adalah `laporan/Diagram_Editabel_Word.docx`; DOCX laporan utama memakai preview PNG supaya teks tidak dobel saat diaudit.
+
+**Q: Bagaimana jika live demo kurang dari 5 menit?**
+A: Ikuti urutan ringkas di `panduan/Demo_Cepat.md`: enam perintah sudah disiapkan lengkap dengan port alternatif (1884/5684) dan ekspektasi baris log. Jika demo gagal, buka contoh log di `data/bukti_konektivitas/` sebagai cadangan.
 
 **Q: File apa yang diunggah ke LMS?**
 A: Satu laporan PDF saja. Semua komponen lain dicantumkan sebagai tautan di dalam PDF.

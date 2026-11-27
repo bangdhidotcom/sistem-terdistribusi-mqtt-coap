@@ -1,0 +1,8 @@
+{"ts":1795663447.7893732,"event":"CONV_READY","extra":{"stage":"coap"}}
+{"ts":1795663447.8114588,"event":"CONV_READY","extra":{"subscribed":["iot/mqtt_to_coap","iot/coap_to_mqtt"]}}
+{"ts":1795663447.906553,"event":"CONV_IN","id":"2b900752-9618-4580-b358-660ddf298ee3","seq":12,"direction":"m2c"}
+{"ts":1795663447.9310317,"event":"CONV_OUT","id":"2b900752-9618-4580-b358-660ddf298ee3","seq":12,"direction":"m2c","extra":{"response":"2.04 Changed"}}
+{"ts":1795663448.0096414,"event":"CONV_IN","id":"5cacc7b9-8051-4c7d-9059-b5f421fc2cbd","seq":13,"direction":"m2c"}
+{"ts":1795663448.0330591,"event":"CONV_OUT","id":"5cacc7b9-8051-4c7d-9059-b5f421fc2cbd","seq":13,"direction":"m2c","extra":{"response":"2.04 Changed"}}
+{"ts":1795663448.1126492,"event":"CONV_IN","id":"aaa8155e-0839-4a80-8d06-6e0e9851199f","seq":14,"direction":"m2c"}
+{"ts":1795663448.1349058,"event":"CONV_OUT","id":"aaa8155e-0839-4a80-8d06-6e0e9851199f","seq":14,"direction":"m2c","extra":{"response":"2.04 Changed"}}
