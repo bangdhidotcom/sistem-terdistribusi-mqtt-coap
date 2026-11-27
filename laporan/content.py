@@ -66,7 +66,7 @@ BLOCKS = [
     {
         "type": "glossary",
         "items": [
-            ["MQTT", "Protokol pesan dengan pola publish/subscribe; cocok untuk koneksi tetap danMany-to-many."],
+            ["MQTT", "Protokol pesan dengan pola publish/subscribe; cocok untuk koneksi persisten dan komunikasi banyak-ke-banyak."],
             ["CoAP", "Protokol ringan dengan pola request/response; dirancang untuk perangkat kecil di atas UDP."],
             ["Broker", "Pusat distribusi MQTT. Ibarat resepsionis yang menerima surat lalu meneruskannya."],
             ["Topik", "Alamat logika MQTT, misalnya <b>iot/mqtt_to_coap</b>. Bukan alamat IP."],
@@ -79,6 +79,13 @@ BLOCKS = [
             ["Blockwise", "Memecah data besar menjadi potongan kecil sesuai RFC 7959."],
             ["SHA-256", "Sidik jari digital untuk membuktikan isi pesan tidak berubah."],
         ],
+    },
+    {
+        "type": "p",
+        "text": "Istilah-istilah di atas adalah fondasi untuk memahami seluruh bab berikutnya. "
+                "Saat membaca alur konversi, coba petakan setiap istilah ke peran yang sesuai: "
+                "publisher dan broker memakai topik, CoAP client memakai resource, dan conversion "
+                "server menghubungkan keduanya.",
     },
     {"type": "pagebreak"},
     {"type": "h1", "text": "1. Latar Belakang dan Tujuan"},
@@ -299,6 +306,13 @@ BLOCKS = [
             ["m2c", "20", "110.872", "110.506", "97,97", "2,03", "21,32", "278,94", "17,63", "43,9"],
         ],
         "widths_cm": [1.2, 1.0, 1.9, 2.2, 1.6, 1.4, 1.6, 1.9, 1.4, 1.6],
+    },
+    {
+        "type": "p",
+        "text": "<b>Catatan pembacaan tabel:</b> angka di atas adalah agregat rata-rata dari 40 run "
+                "eksperimen yang valid (10 pengulangan &#215; 4 kombinasi arah dan laju), bukan hasil "
+                "dari satu kali pengiriman. Jumlah pesan pada kolom Terkirim dan Terverifikasi adalah "
+                "total akumulasi selama 10 menit per run.",
     },
     {
         "type": "images_row",
