@@ -1,0 +1,55 @@
+<svg width="1600" height="900" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#ffffff" />
+  
+  <!-- Network Layer (Background) -->
+  <rect x="50" y="50" width="1500" height="800" rx="20" fill="#f0f0f0" stroke="#cccccc" stroke-width="2" />
+  <text x="800" y="90" font-family="Segoe UI" font-size="30" font-weight="bold" text-anchor="middle" fill="#555555">Host IP Konvensional (Loopback / Localhost)</text>
+
+  <!-- Components -->
+  <!-- MQTT Roles (Navy: #000080) -->
+  <rect x="150" y="150" width="250" height="120" rx="10" fill="#e6e6ff" stroke="#000080" stroke-width="3" />
+  <text x="275" y="190" font-family="Segoe UI" font-size="24" font-weight="bold" text-anchor="middle" fill="#000080">MQTT Publisher</text>
+  <text x="275" y="220" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#333">Producer</text>
+
+  <rect x="550" y="150" width="250" height="120" rx="10" fill="#e6e6ff" stroke="#000080" stroke-width="3" />
+  <text x="675" y="190" font-family="Segoe UI" font-size="24" font-weight="bold" text-anchor="middle" fill="#000080">MQTT Broker</text>
+  <text x="675" y="220" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#333">1883/1884</text>
+
+  <rect x="150" y="650" width="250" height="120" rx="10" fill="#e6e6ff" stroke="#000080" stroke-width="3" />
+  <text x="275" y="690" font-family="Segoe UI" font-size="24" font-weight="bold" text-anchor="middle" fill="#000080">MQTT Subscriber</text>
+  <text x="275" y="720" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#333">Consumer</text>
+
+  <!-- Conversion Server (Purple: #800080) -->
+  <rect x="600" y="400" width="400" height="200" rx="15" fill="#f2e6f2" stroke="#800080" stroke-width="4" />
+  <text x="800" y="460" font-family="Segoe UI" font-size="28" font-weight="bold" text-anchor="middle" fill="#800080">Conversion Server</text>
+  <text x="800" y="500" font-family="Segoe UI" font-size="22" text-anchor="middle" fill="#333">Dedup, Anti-Loop, Konversi Payload</text>
+
+  <!-- CoAP Roles (Teal: #008080) -->
+  <rect x="1200" y="150" width="250" height="120" rx="10" fill="#e6f2f2" stroke="#008080" stroke-width="3" />
+  <text x="1325" y="190" font-family="Segoe UI" font-size="24" font-weight="bold" text-anchor="middle" fill="#008080">CoAP Server</text>
+  <text x="1325" y="220" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#333">5683/5684</text>
+
+  <rect x="1200" y="650" width="250" height="120" rx="10" fill="#e6f2f2" stroke="#008080" stroke-width="3" />
+  <text x="1325" y="690" font-family="Segoe UI" font-size="24" font-weight="bold" text-anchor="middle" fill="#008080">CoAP Client</text>
+  <text x="1325" y="720" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#333">POST/GET</text>
+
+  <!-- Paths -->
+  <!-- MQTT->CoAP -->
+  <path d="M400 210 L550 210" stroke="#000080" stroke-width="4" marker-end="url(#arrow)" />
+  <text x="475" y="190" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#000080">iot/mqtt_to_coap</text>
+  <path d="M800 400 L1200 210" stroke="#000080" stroke-width="4" marker-end="url(#arrow)" />
+  <text x="1050" y="320" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#000080">/target</text>
+
+  <!-- CoAP->MQTT -->
+  <path d="M1200 710 L1000 600" stroke="#008080" stroke-width="4" marker-end="url(#arrow)" />
+  <text x="1150" y="650" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#008080">/source</text>
+  <path d="M600 550 L400 710" stroke="#008080" stroke-width="4" marker-end="url(#arrow)" />
+  <text x="500" y="650" font-family="Segoe UI" font-size="20" text-anchor="middle" fill="#008080">iot/coap_to_mqtt</text>
+
+  <!-- Arrows -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333" />
+    </marker>
+  </defs>
+</svg>

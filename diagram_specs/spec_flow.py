@@ -2,46 +2,46 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from vendor.jump2.uml_core import Diagram, C
+from vendor.jump2.uml_core import Diagram, C, FILL
 from vendor.jump2.uml_drawml import to_drawingml
 from vendor.jump2.uml_png import render_png
 from vendor.jump2.uml_validate import validate, report_text_fit
 
 def build_flow_m2c():
-    # Portrait 15,6 x 20,5 cm
-    d = Diagram("FlowM2C", 15.6, 20.5)
+    d = Diagram("FlowM2C", 16, 22)
     steps = [
-        "1. Publisher Kirim",
-        "2. Broker Terima",
-        "3. Conv Server Validasi",
-        "4. CoAP POST /target",
-        "5. CoAP Server Simpan",
-        "6. CoAP GET Verifikasi"
+        "1. Publisher sends JSON",
+        "2. MQTT Broker receives",
+        "3. Conv Server processes & signs",
+        "4. POST /target to CoAP Server",
+        "5. CoAP Server queues",
+        "6. GET client verifies"
     ]
     for i, step in enumerate(steps):
-        d.rrect(f"s{i}", 2, 1 + i*3, 11, 2, text=step, fill=C["blue"], line=C["blue_d"])
+        d.rrect(f"s{i}", 2, 1 + i*3.2, 12, 2.5, text=step, fill=FILL["blue"], line=C["blue_d"])
+        d.circle(2, 2.25 + i*3.2, 0.4, fill=C["blue"], line=C["blue_d"])
     
     for i in range(len(steps)-1):
-        d.edge([(7.5, 3 + i*3), (7.5, 1 + (i+1)*3)], color=C["blue_d"], arrow="arrow")
+        d.edge([(8, 3.5 + i*3.2), (8, 1 + (i+1)*3.2)], color=C["blue_d"], arrow="arrow")
         
     return d
 
 def build_flow_c2m():
-    # Portrait 15,6 x 20,5 cm
-    d = Diagram("FlowC2M", 15.6, 20.5)
+    d = Diagram("FlowC2M", 16, 22)
     steps = [
-        "1. POST Client",
-        "2. CoAP Server /source",
-        "3. Conv GET Polling 1s",
-        "4. Deduplikasi LastID",
+        "1. POST client sends",
+        "2. CoAP Server /source queues",
+        "3. Conv Server GET polling (1s)",
+        "4. Deduplication by ID",
         "5. MQTT Publish",
-        "6. Subscriber Verifikasi"
+        "6. Subscriber verifies"
     ]
     for i, step in enumerate(steps):
-        d.rrect(f"s{i}", 2, 1 + i*3, 11, 2, text=step, fill=C["green"], line=C["green_d"])
+        d.rrect(f"s{i}", 2, 1 + i*3.2, 12, 2.5, text=step, fill=FILL["green"], line=C["green_d"])
+        d.circle(2, 2.25 + i*3.2, 0.4, fill=C["green"], line=C["green_d"])
     
     for i in range(len(steps)-1):
-        d.edge([(7.5, 3 + i*3), (7.5, 1 + (i+1)*3)], color=C["green_d"], arrow="arrow")
+        d.edge([(8, 3.5 + i*3.2), (8, 1 + (i+1)*3.2)], color=C["green_d"], arrow="arrow")
         
     return d
 
