@@ -32,6 +32,7 @@ experiments/plotting.py
 experiments/rerun_failed.py
 panduan/Panduan_Pengumpulan_LMS.md
 panduan/QnA.md
+panduan/Demo_Cepat.md
 scripts/final_retry.ps1
 scripts/perfect_run.ps1
 scripts/rerun_and_finalize.ps1

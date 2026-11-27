@@ -31,8 +31,8 @@ RYU, Mininet, maupun Open vSwitch.
   DrawingML editabel), serta `laporan/Diagram_Editabel_Word.docx`.
 - `output-xml/` dan `output/` — sumber diagram/grafik editabel dan preview PNG.
 - `slide/Slide_Presentasi.pptx` — 12 slide presentasi.
-- `panduan/Demo_Cepat.md` dan `panduan/Verifikasi_Individu.md` — alur demo dan
-  verifikasi per anggota.
+- `panduan/Verifikasi_Individu.md` — alur verifikasi per anggota. Panduan demo
+  disiapkan tim secara internal dan tidak disertakan di repositori ini.
 - `scripts/` — pembantu proses demo dan healthcheck.
 
 ## Hasil ringkas
@@ -50,8 +50,7 @@ python -m unittest discover -s tests
 ```
 
 Kampanye penuh 40 run (dua arah × dua laju × sepuluh pengulangan × sepuluh
-menit) sudah selesai dan tidak perlu diulang. Untuk sesi demo singkat, ikuti
-`panduan/Demo_Cepat.md`.
+menit) sudah selesai dan tidak perlu diulang.
 
 ## Tautan
 
