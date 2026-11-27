@@ -32,9 +32,11 @@ def build_architecture():
     def comp(id_, x, y, w, h, text, color, fill, badge):
         d.rrect(id_, x, y, w, h, fill=fill, line=color, lw=1.6)
         # badge nomor: dipusatkan tepat di atas kotak
+        badge_color = "000000" if color == C["orange_d"] else C["white"]
         d.label_chip(x + w / 2 - 0.20, y - 0.30, str(badge),
-                     pt=9, fill=color, color=C["white"])
-        d.rect(None, x, y + 0.4, w, h - 0.4, text=text, tsize=8, bold=True)
+                     pt=9, fill=color, color=badge_color)
+        d.rect(None, x, y + 0.4, w, h - 0.4, text=text, tsize=8.5, bold=True,
+               tcolor="000000")
         return x + w / 2, y + h / 2
 
     comp("p1", 2, 3, 4.5, 2.5, "MQTT Publisher\niot/mqtt_to_coap",

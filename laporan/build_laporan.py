@@ -83,10 +83,17 @@ def _docx_hyperlink(paragraph, text: str, url: str) -> None:
     hyperlink.set(qn("r:id"), rid)
     run = OxmlElement("w:r")
     r_pr = OxmlElement("w:rPr")
+    rfonts = OxmlElement("w:rFonts")
+    rfonts.set(qn("w:ascii"), "Times New Roman")
+    rfonts.set(qn("w:hAnsi"), "Times New Roman")
+    sz = OxmlElement("w:sz")
+    sz.set(qn("w:val"), "24")
     color = OxmlElement("w:color")
     color.set(qn("w:val"), "000000")
     underline = OxmlElement("w:u")
     underline.set(qn("w:val"), "single")
+    r_pr.append(rfonts)
+    r_pr.append(sz)
     r_pr.append(color)
     r_pr.append(underline)
     run.append(r_pr)
@@ -105,7 +112,11 @@ def add_rich(paragraph, text: str) -> None:
             continue
         low = token.lower()
         if low in ("<br>", "<br/>"):
-            paragraph.add_run().add_break()
+            r = paragraph.add_run(" ")
+            r.font.name = "Times New Roman"
+            r.font.size = Pt(12)
+            r.font.color.rgb = RGBColor(0, 0, 0)
+            r.add_break()
         elif low == "<b>":
             bold = True
         elif low == "</b>":
@@ -124,6 +135,9 @@ def add_rich(paragraph, text: str) -> None:
             r = paragraph.add_run(html.unescape(token))
             r.bold = bold
             r.italic = italic
+            r.font.name = "Times New Roman"
+            r.font.size = Pt(12)
+            r.font.color.rgb = RGBColor(0, 0, 0)
 
 
 def _shade(cell, hex_color: str) -> None:
@@ -143,6 +157,12 @@ def _set_cell_text(cell, text: str, bold=False, size=10) -> None:
         r.bold = bold or r.bold
         r.font.name = "Times New Roman"
         r.font.size = Pt(size)
+        r.font.color.rgb = RGBColor(0, 0, 0)
+
+
+def _force_tnr_black(paragraph) -> None:
+    for r in paragraph.runs:
+        r.font.name = "Times New Roman"
         r.font.color.rgb = RGBColor(0, 0, 0)
 
 
@@ -185,6 +205,16 @@ def _add_editable_shape(doc, stem: str) -> bool:
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p._p.append(parse_xml(xml))
+    return True
+
+
+def _add_picture(doc, rel_path: str, width_cm: float) -> bool:
+    p = ROOT / rel_path
+    if not p.exists():
+        return False
+    para = doc.add_paragraph()
+    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.add_run().add_picture(str(p), width=Cm(min(width_cm, CONTENT_W)))
     return True
 
 
@@ -238,20 +268,14 @@ def build_pdf() -> int:
         if total > CONTENT_W:
             widths = [w * CONTENT_W / total for w in widths]
         t = Table(rows, colWidths=[w * cm for w in widths],
-                  repeatRows=1 if header else 0, hAlign="CENTER")
+                  repeatRows=0, hAlign="CENTER")
         style = [
-            ("GRID", (0, 0), (-1, -1), 0.35, GRID),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("LEFTPADDING", (0, 0), (-1, -1), 3),
             ("RIGHTPADDING", (0, 0), (-1, -1), 3),
             ("TOPPADDING", (0, 0), (-1, -1), 2.5),
             ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
         ]
-        if header:
-            style += [
-                ("BACKGROUND", (0, 0), (-1, 0), HEAD_FILL),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, CALLOUT_FILL]),
-            ]
         t.setStyle(TableStyle(style))
         return t
 
@@ -274,17 +298,7 @@ def build_pdf() -> int:
                 prefix = "• " if kind == "bullets" else "%d. " % (i + 1)
                 elems.append(Paragraph(prefix + inline_pdf(item), st["List"]))
         elif kind == "callout":
-            inner = [[Paragraph(inline_pdf(b["title"]), st["CallTitle"])],
-                     [Paragraph(inline_pdf(b["text"]), st["CallBody"])]]
-            t = Table(inner, colWidths=[CONTENT_W * cm])
-            t.setStyle(TableStyle([
-                ("BACKGROUND", (0, 0), (-1, -1), CALLOUT_FILL),
-                ("LEFTPADDING", (0, 0), (-1, -1), 6),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-                ("TOPPADDING", (0, 0), (-1, -1), 3),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-            ]))
-            elems += [t, Spacer(1, 3)]
+            elems.append(Paragraph(inline_pdf(b["text"]), st["Body"]))
         elif kind == "glossary":
             rows = [[Paragraph("Istilah", st["CellHead"]), Paragraph("Arti sederhana", st["CellHead"])]]
             rows += [[Paragraph(inline_pdf(a), st["Cell"]), Paragraph(inline_pdf(c), st["Cell"])]
@@ -338,22 +352,30 @@ def build_docx() -> tuple[int, int]:
         if kind == "title":
             h = doc.add_heading(b["text"], 0)
             h.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            for r in h.runs:
+                r.font.name = "Times New Roman"
+                r.font.size = Pt(16)
+                r.font.color.rgb = RGBColor(0, 0, 0)
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             add_rich(p, b["sub"])
         elif kind == "meta":
             t = doc.add_table(rows=0, cols=2)
-            t.style = "Table Grid"
+            t.style = None
             t.alignment = WD_TABLE_ALIGNMENT.CENTER
             for row in b["rows"]:
                 cells = t.add_row().cells
                 _set_cell_text(cells[0], row[0], bold=True, size=10)
-                _shade(cells[0], "F0F0F0")
                 _set_cell_text(cells[1], row[1], size=10)
             t.columns[0].width = Cm(3)
             t.columns[1].width = Cm(12.9)
         elif kind in ("h1", "h2"):
-            doc.add_heading(b["text"], 1 if kind == "h1" else 2)
+            level = 1 if kind == "h1" else 2
+            h = doc.add_heading(b["text"], level)
+            for r in h.runs:
+                r.font.name = "Times New Roman"
+                r.font.size = Pt(13 if level == 1 else 12)
+                r.font.color.rgb = RGBColor(0, 0, 0)
         elif kind == "p":
             add_rich(doc.add_paragraph(), b["text"])
         elif kind in ("bullets", "numbered"):
@@ -363,20 +385,12 @@ def build_docx() -> tuple[int, int]:
                 p.paragraph_format.left_indent = Cm(0.5)
                 add_rich(p, prefix + item)
         elif kind == "callout":
-            p = doc.add_paragraph()
-            p.paragraph_format.left_indent = Cm(0.2)
-            add_rich(p, "**" + b["title"] + ":** " + b["text"])
-            p_pr = p._p.get_or_add_pPr()
-            shd = OxmlElement("w:shd")
-            shd.set(qn("w:val"), "clear")
-            shd.set(qn("w:fill"), "F7F7F7")
-            p_pr.append(shd)
+            add_rich(doc.add_paragraph(), b["text"])
         elif kind == "glossary":
             t = doc.add_table(rows=1, cols=2)
-            t.style = "Table Grid"
+            t.style = None
             for i, h in enumerate(["Istilah", "Arti sederhana"]):
                 _set_cell_text(t.rows[0].cells[i], h, bold=True, size=10)
-                _shade(t.rows[0].cells[i], "F0F0F0")
             for a, c in b["items"]:
                 cells = t.add_row().cells
                 _set_cell_text(cells[0], a, bold=True, size=10)
@@ -385,11 +399,10 @@ def build_docx() -> tuple[int, int]:
             t.columns[1].width = Cm(12.7)
         elif kind == "table":
             t = doc.add_table(rows=1, cols=len(b["header"]))
-            t.style = "Table Grid"
+            t.style = None
             t.alignment = WD_TABLE_ALIGNMENT.CENTER
             for i, h in enumerate(b["header"]):
                 _set_cell_text(t.rows[0].cells[i], h, bold=True, size=9.5)
-                _shade(t.rows[0].cells[i], "F0F0F0")
             for row in b["rows"]:
                 cells = t.add_row().cells
                 for i, val in enumerate(row):
@@ -401,28 +414,40 @@ def build_docx() -> tuple[int, int]:
             for col, w in zip(t.columns, widths):
                 col.width = Cm(w)
         elif kind == "image":
-            stem = Path(b["path"]).stem
-            if not _add_editable_shape(doc, stem):
-                p = ROOT / b["path"]
-                if p.exists():
-                    pic = doc.add_paragraph()
-                    pic.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                    pic.add_run().add_picture(str(p), width=Cm(min(b.get("width_cm", 15), CONTENT_W)))
-                else:
-                    add_rich(doc.add_paragraph(), "[gambar tidak tersedia: %s]" % b["path"])
+            if not _add_picture(doc, b["path"], b.get("width_cm", 15)):
+                add_rich(doc.add_paragraph(), "[gambar tidak tersedia: %s]" % b["path"])
             _figure_caption(doc, b["caption"])
         elif kind == "images_row":
-            for item in b["items"]:
-                stem = Path(item["path"]).stem
-                if not _add_editable_shape(doc, stem):
-                    p = ROOT / item["path"]
-                    if p.exists():
-                        pic = doc.add_paragraph()
-                        pic.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                        pic.add_run().add_picture(str(p), width=Cm(min(item.get("width_cm", 7.1), CONTENT_W)))
-                _figure_caption(doc, item["caption"])
+            t = doc.add_table(rows=1, cols=len(b["items"]))
+            t.style = None
+            t.alignment = WD_TABLE_ALIGNMENT.CENTER
+            cw = CONTENT_W / len(b["items"]) - 0.2
+            for i, item in enumerate(b["items"]):
+                cell = t.rows[0].cells[i]
+                cell.width = Cm(cw)
+                pic = cell.paragraphs[0]
+                pic.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                p = ROOT / item["path"]
+                if p.exists():
+                    pic.add_run().add_picture(str(p), width=Cm(cw))
+                cap = cell.add_paragraph()
+                cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                add_rich(cap, item["caption"])
+                for run in cap.runs:
+                    run.italic = True
+                    run.font.name = "Times New Roman"
+                    run.font.size = Pt(10)
+                    run.font.color.rgb = RGBColor(0, 0, 0)
         elif kind == "pagebreak":
             doc.add_page_break()
+
+    for p in doc.paragraphs:
+        _force_tnr_black(p)
+    for t in doc.tables:
+        for row in t.rows:
+            for cell in row.cells:
+                for p in cell.paragraphs:
+                    _force_tnr_black(p)
 
     OUT_DOCX.parent.mkdir(parents=True, exist_ok=True)
     doc.save(OUT_DOCX)
@@ -441,8 +466,14 @@ def verify_identity() -> float:
     doc = Document(OUT_DOCX)
     parts = []
     for child in doc.element.body.iterchildren():
-        if child.tag in (qn("w:p"), qn("w:tbl")):
-            parts.append("".join((t.text or "") for t in child.iter(qn("w:t"), qn("a:t"))))
+        if child.tag == qn("w:p"):
+            parts.append("".join((t.text or "") for t in child.iter(qn("w:t"))))
+        elif child.tag == qn("w:tbl"):
+            cells = [
+                "".join((t.text or "") for t in tc.iter(qn("w:t")))
+                for tc in child.iter(qn("w:tc"))
+            ]
+            parts.append(" ".join(cells))
     word = _norm(" ".join(parts))
     return difflib.SequenceMatcher(None, pdf, word, autojunk=False).ratio()
 

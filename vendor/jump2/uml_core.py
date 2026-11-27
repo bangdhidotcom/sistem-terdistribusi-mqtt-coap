@@ -380,7 +380,7 @@ class Diagram:
         box = Box(cx - w / 2.0, top, w, bh)
         self.nodes[lid] = box
         self._shape("roundRect", box, fill, color, 1.6, None, 0.10)
-        self._text(box, lines, tsize, C["white"], True, "center", "center", 0.04)
+        self._text(box, lines, tsize, "000000", True, "center", "center", 0.04)
         self.seg((cx, box.y2), (cx, bottom), C["gray"], 1.0, "sysDash")
         self.containers[lid + "_ll"] = Box(cx - 0.03, box.y2, 0.06,
                                            bottom - box.y2)
