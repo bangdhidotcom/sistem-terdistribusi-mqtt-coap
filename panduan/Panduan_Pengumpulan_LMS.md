@@ -16,6 +16,7 @@ Aturan dari screenshot LMS: **kumpulkan satu laporan akhir berformat `.pdf`**. K
 
 ## Checklist cepat
 - [ ] PDF ≤ 10 halaman
+- [ ] DOCX = 10 halaman, A4, 7 shape editabel (0 gambar raster)
 - [ ] Slide ≤ 12 slide
 - [ ] CSV mentah + ringkasan + grafik ada
 - [ ] Tautan repo aktif

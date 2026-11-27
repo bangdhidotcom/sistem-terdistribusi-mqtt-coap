@@ -30,12 +30,15 @@ A: Kolom itu disiapkan sebagai tempat penulisan nilai hash, tetapi `summarize.py
 **Q: Bagaimana delay konversi dihitung?**
 A: `(conv_send_ts − conv_recv_ts) × 1000` ms. Spesifikasi menuliskan selisih terbalik; laporan mencatat penyesuaian ini agar bernilai positif.
 
+**Q: Bagaimana persentase sukses/loss di Tabel 6.1 dihitung?**
+A: Sesuai definisi tugas, `sukses = total diterima / total terkirim × 100` dan `loss = 100 − sukses`, dihitung dari akumulasi 10 run per kombinasi. Nilainya: C2M/10 = 100,00/0,00; C2M/20 = 99,99/0,01; M2C/10 = 99,71/0,29; M2C/20 = 99,67/0,33. Angka overall 99,815% = 289.571/290.107.
+
 **Q: Mengapa angka artikel acuan berbeda jauh?**
 A: Artikel memakai OpenFlow dan definisi timestamp yang tampak tidak konsisten (delay puluhan detik pada satu arah, namun loss tinggi pada arah lain). Replikasi ini tidak meniru angka tersebut, melainkan membandingkan secara kualitatif.
 
 ## Luaran
 **Q: Di mana diagram editabelnya?**
-A: `output-xml/*.xml` berisi `<w:drawing>` dengan `wps:wsp`/`wpg:wgp` native Word (tanpa `r:embed`). `output/*.png` adalah render 200 dpi dari display list yang sama. Dokumen Word yang benar-benar editabel adalah `laporan/Diagram_Editabel_Word.docx`; DOCX laporan utama memakai preview PNG supaya teks tidak dobel saat diaudit.
+A: `output-xml/*.xml` berisi `<w:drawing>` dengan `wps:wsp`/`wpg:wgp` native Word (tanpa `r:embed`). `output/*.png` adalah render 200 dpi dari display list yang sama. DOCX laporan utama kini menyisipkan tujuh shape editabel tersebut (0 gambar raster, 0 media); PDF tetap memakai preview PNG karena sifatnya fixed-layout. Kumpulan diagram editabel mandiri tersedia di `laporan/Diagram_Editabel_Word.docx`. Audit kesamaan teks PDF–DOCX mengecualikan label di dalam shape agar tidak terhitung dua kali.
 
 **Q: Bagaimana jika live demo kurang dari 5 menit?**
 A: Ikuti urutan ringkas di `panduan/Demo_Cepat.md`: enam perintah sudah disiapkan lengkap dengan port alternatif (1884/5684) dan ekspektasi baris log. Jika demo gagal, buka contoh log di `data/bukti_konektivitas/` sebagai cadangan.

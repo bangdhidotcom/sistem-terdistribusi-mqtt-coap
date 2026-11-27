@@ -59,8 +59,11 @@ def build_architecture():
            arrow="arrow", label="POST /target")
 
     # --- Jalur 2: CoAP -> MQTT (putus-putus hijau)
-    d.edge([(19.5, 10.25), (15.25, 7.5)], color=C["green_d"], lw=2.2,
+    # Client POST ke CoAP server /source, converter GET /source tiap 1 detik.
+    d.edge([(21.75, 9.0), (21.75, 5.5)], color=C["green_d"], lw=2.2,
            dash="dash", arrow="arrow", label="POST /source")
+    d.edge([(15.25, 8.5), (19.5, 5.0)], color=C["green_d"], lw=2.2,
+           dash="dash", arrow="arrow", label="GET /source (1 dtk)", lsize=7)
     d.edge([(10.75, 7.5), (6.5, 7.25)], color=C["green_d"], lw=2.2,
            dash="dash", arrow="arrow", label="iot/coap_to_mqtt")
 

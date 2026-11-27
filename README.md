@@ -27,21 +27,21 @@ slide, diagram editabel, dan panduan sudah tersedia di repositori ini. Seluruh
 
 1. Kode: `src/` (6 peran logis), `config/`, `requirements.txt`, `experiments/`, `tests/`.
 2. Laporan teknis: `laporan/Laporan_Akhir_Sistem_Terdistribusi.pdf` (10 halaman) dan
-   `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx`. Format A4, Times New Roman 12,
-   margin 2 cm, seluruh teks hitam, tanpa garis pembatas antar bagian. Keduanya dibuat
-   dari satu sumber blok `laporan/content.py` oleh `laporan/build_laporan.py`.
-   Kesamaan teks 100% (audit `w:t` DOCX terhadap teks PDF). Laporan memakai preview PNG
-   agar label diagram tidak terhitung dua kali; versi shape editabel disimpan terpisah
-   di `laporan/Diagram_Editabel_Word.docx`.
+   `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx` (10 halaman). Format A4, Times New
+   Roman 12, margin 2 cm, seluruh teks hitam, tabel bergaris dengan kepala biru muda.
+   Keduanya dibuat dari satu sumber blok `laporan/content.py` oleh
+   `laporan/build_laporan.py`. Teks tubuh identik; label di dalam shape editabel tidak
+   dihitung dua kali dalam audit kesamaan teks. PDF memakai preview PNG (sifat PDF
+   fixed-layout), sedangkan DOCX menyisipkan tujuh **shape DrawingML editabel**.
 3. Data: `data/raw/messages.csv`, `data/summary/summary.csv` (440 baris x 18 kolom),
    `data/grafik/*.png`.
 4. Slide: `slide/Slide_Presentasi.pptx` (12 slide).
 5. Diagram dan grafik: `output/*.png` + `data/grafik/*.png` (preview 200 DPI) dan
    `output-xml/*.xml` (DrawingML asli berupa `wps:wsp`, tanpa `r:embed`/media tertanam).
-   DOCX laporan dan PDF menyisipkan **preview PNG**; dokumen yang memuat shape editabel
-   adalah `laporan/Diagram_Editabel_Word.docx` (1.282 `wps:wsp`, 0 media). Diagram
-   berasal dari `diagram_specs/`, grafik dari `laporan/chart_shapes.py`; salinan SVG
-   lama tidak dijadikan rujukan.
+   DOCX laporan memakai XML tersebut sebagai shape editabel (641 elemen `wps:wsp`, 0 media);
+   PDF memakai preview PNG. Kumpulan diagram editabel mandiri juga tersedia di
+   `laporan/Diagram_Editabel_Word.docx`. Diagram berasal dari `diagram_specs/`, grafik
+   dari `laporan/chart_shapes.py`; salinan SVG lama tidak dijadikan rujukan.
 6. Panduan: `panduan/Verifikasi_Individu.md`, `panduan/Demo_Cepat.md`,
    `panduan/Panduan_Pengumpulan_LMS.md`, `panduan/QnA.md`. Contoh log per-run ada di
    `data/bukti_konektivitas/`; log JSONL lengkap (~263 MB) sengaja di-ignore dan dapat
@@ -75,10 +75,12 @@ python -m unittest discover -s tests
 ```
 
 Urutan regenerasi di atas wajib berurutan: diagram → grafik editabel → DOCX → PDF → slide.
-`laporan/build_report.py` adalah pembuat laporan versi lama yang menimpa path PDF yang sama
-dan menghasilkan gambar statis (bukan shape editabel) — **jangan dijalankan**. Satu-satunya
-sumber kanonik adalah `laporan/content.py` lewat `laporan/build_laporan.py`; file lama
-dibiarkan hanya sebagai arsip, bukan entry point.
+`laporan/build_laporan.py` menghasilkan PDF dan DOCX sekaligus, lalu mencetak rasio
+kesamaan teks (label shape dikecualikan). Verifikasi akhir: PDF 10 halaman, DOCX 10
+halaman, 7 shape editabel di DOCX, slide 12. `laporan/build_report.py` adalah pembuat
+laporan versi lama yang menimpa path PDF yang sama dan menghasilkan gambar statis —
+**jangan dijalankan**. Satu-satunya sumber kanonik adalah `laporan/content.py` lewat
+`laporan/build_laporan.py`; file lama dibiarkan hanya sebagai arsip, bukan entry point.
 
 Kampanye penuh: 40 run (40 valid) = dua arah x dua laju x 10 pengulangan x 10 menit.
 Payload kampanye 4 KB; uji tambahan 200 KB blockwise tersedia lewat `--payload-size 204800`.

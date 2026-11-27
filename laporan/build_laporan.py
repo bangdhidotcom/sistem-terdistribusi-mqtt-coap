@@ -166,8 +166,40 @@ def _force_tnr_black(paragraph) -> None:
         r.font.color.rgb = RGBColor(0, 0, 0)
 
 
+def _shade_cell(cell, fill: str) -> None:
+    tc_pr = cell._tc.get_or_add_tcPr()
+    shd = OxmlElement("w:shd")
+    shd.set(qn("w:val"), "clear")
+    shd.set(qn("w:color"), "auto")
+    shd.set(qn("w:fill"), fill)
+    tc_pr.append(shd)
+
+
+def _style_table_docx(t, header_rows: int = 1, first_col: bool = False) -> None:
+    """Beri garis tipis, kepala tabel biru muda, dan selang-seling baris."""
+    borders = OxmlElement("w:tblBorders")
+    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        el = OxmlElement("w:" + edge)
+        el.set(qn("w:val"), "single")
+        el.set(qn("w:sz"), "6")
+        el.set(qn("w:space"), "0")
+        el.set(qn("w:color"), "B8C6D9")
+        borders.append(el)
+    t._tbl.tblPr.append(borders)
+    for i, row in enumerate(t.rows):
+        for j, cell in enumerate(row.cells):
+            if i < header_rows:
+                _shade_cell(cell, "E8EFFB")
+            elif first_col and j == 0:
+                _shade_cell(cell, "E8EFFB")
+            elif i % 2 == 0:
+                _shade_cell(cell, "F6F8FC")
+
+
 def _style_docx(doc: Document) -> None:
     sec = doc.sections[0]
+    sec.page_width = Cm(21.0)
+    sec.page_height = Cm(29.7)
     sec.top_margin = Cm(2.0)
     sec.bottom_margin = Cm(2.0)
     sec.left_margin = Cm(2.0)
@@ -177,6 +209,7 @@ def _style_docx(doc: Document) -> None:
     normal.font.size = Pt(12)
     normal.font.color.rgb = RGBColor(0, 0, 0)
     normal.paragraph_format.space_after = Pt(4)
+    normal.paragraph_format.line_spacing = 0.95
     for name, size in (("Title", 16), ("Heading 1", 13), ("Heading 2", 12)):
         st = doc.styles[name]
         st.font.name = "Times New Roman"
@@ -198,11 +231,11 @@ def _editable_xml(stem: str) -> str | None:
     return None
 
 
-def _add_editable_shape(doc, stem: str) -> bool:
+def _add_editable_shape(doc, stem: str, para=None) -> bool:
     xml = _editable_xml(stem)
     if not xml:
         return False
-    p = doc.add_paragraph()
+    p = para if para is not None else doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p._p.append(parse_xml(xml))
     return True
@@ -275,7 +308,15 @@ def build_pdf() -> int:
             ("RIGHTPADDING", (0, 0), (-1, -1), 3),
             ("TOPPADDING", (0, 0), (-1, -1), 2.5),
             ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+            ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#B8C6D9")),
         ]
+        if header:
+            style += [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E8EFFB")),
+                ("LINEBELOW", (0, 0), (-1, 0), 0.8, colors.HexColor("#2A5FD4")),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1),
+                 [colors.white, colors.HexColor("#F6F8FC")]),
+            ]
         t.setStyle(TableStyle(style))
         return t
 
@@ -369,6 +410,7 @@ def build_docx() -> tuple[int, int]:
                 _set_cell_text(cells[1], row[1], size=10)
             t.columns[0].width = Cm(3)
             t.columns[1].width = Cm(12.9)
+            _style_table_docx(t, header_rows=0, first_col=True)
         elif kind in ("h1", "h2"):
             level = 1 if kind == "h1" else 2
             h = doc.add_heading(b["text"], level)
@@ -397,6 +439,7 @@ def build_docx() -> tuple[int, int]:
                 _set_cell_text(cells[1], c, size=10)
             t.columns[0].width = Cm(3.2)
             t.columns[1].width = Cm(12.7)
+            _style_table_docx(t)
         elif kind == "table":
             t = doc.add_table(rows=1, cols=len(b["header"]))
             t.style = None
@@ -413,9 +456,11 @@ def build_docx() -> tuple[int, int]:
                 widths = [w * CONTENT_W / total for w in widths]
             for col, w in zip(t.columns, widths):
                 col.width = Cm(w)
+            _style_table_docx(t)
         elif kind == "image":
-            if not _add_picture(doc, b["path"], b.get("width_cm", 15)):
-                add_rich(doc.add_paragraph(), "[gambar tidak tersedia: %s]" % b["path"])
+            if not _add_editable_shape(doc, Path(b["path"]).stem):
+                if not _add_picture(doc, b["path"], b.get("width_cm", 15)):
+                    add_rich(doc.add_paragraph(), "[gambar tidak tersedia: %s]" % b["path"])
             _figure_caption(doc, b["caption"])
         elif kind == "images_row":
             t = doc.add_table(rows=1, cols=len(b["items"]))
@@ -427,9 +472,11 @@ def build_docx() -> tuple[int, int]:
                 cell.width = Cm(cw)
                 pic = cell.paragraphs[0]
                 pic.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                p = ROOT / item["path"]
-                if p.exists():
-                    pic.add_run().add_picture(str(p), width=Cm(cw))
+                stem = Path(item["path"]).stem
+                if not _add_editable_shape(doc, stem, para=pic):
+                    p = ROOT / item["path"]
+                    if p.exists():
+                        pic.add_run().add_picture(str(p), width=Cm(cw))
                 cap = cell.add_paragraph()
                 cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
                 add_rich(cap, item["caption"])
@@ -443,11 +490,14 @@ def build_docx() -> tuple[int, int]:
 
     for p in doc.paragraphs:
         _force_tnr_black(p)
+        p.paragraph_format.line_spacing = 0.95
+        p.paragraph_format.space_after = Pt(1)
     for t in doc.tables:
         for row in t.rows:
             for cell in row.cells:
                 for p in cell.paragraphs:
                     _force_tnr_black(p)
+                    p.paragraph_format.space_after = Pt(0)
 
     OUT_DOCX.parent.mkdir(parents=True, exist_ok=True)
     doc.save(OUT_DOCX)
@@ -456,6 +506,22 @@ def build_docx() -> tuple[int, int]:
 
 def _norm(text: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(text)).strip()
+
+
+def _visible_text(node) -> str:
+    """Teks tubuh dokumen, tanpa label di dalam shape DrawingML editabel."""
+    out = []
+    for t in node.iter(qn("w:t")):
+        anc = t.getparent()
+        inside_drawing = False
+        while anc is not None:
+            if anc.tag == qn("w:drawing"):
+                inside_drawing = True
+                break
+            anc = anc.getparent()
+        if not inside_drawing:
+            out.append(t.text or "")
+    return "".join(out)
 
 
 def verify_identity() -> float:
@@ -467,12 +533,9 @@ def verify_identity() -> float:
     parts = []
     for child in doc.element.body.iterchildren():
         if child.tag == qn("w:p"):
-            parts.append("".join((t.text or "") for t in child.iter(qn("w:t"))))
+            parts.append(_visible_text(child))
         elif child.tag == qn("w:tbl"):
-            cells = [
-                "".join((t.text or "") for t in tc.iter(qn("w:t")))
-                for tc in child.iter(qn("w:tc"))
-            ]
+            cells = [_visible_text(tc) for tc in child.iter(qn("w:tc"))]
             parts.append(" ".join(cells))
     word = _norm(" ".join(parts))
     return difflib.SequenceMatcher(None, pdf, word, autojunk=False).ratio()

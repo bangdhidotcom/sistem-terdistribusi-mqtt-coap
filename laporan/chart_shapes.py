@@ -58,6 +58,8 @@ def frame(d: Diagram, ymax: float, unit: str, ticks: int = 4) -> None:
     for i in range(ticks + 1):
         v = ymax * i / ticks
         y = PLOT_B - (PLOT_B - PLOT_T) * i / ticks
+        if 0 < i < ticks:
+            d.seg((PLOT_L, y), (PLOT_R, y), color="E6EBF2", lw=0.5)
         d.seg((PLOT_L - 0.10, y), (PLOT_L, y), color="000000", lw=0.8)
         d.label_at(PLOT_L - 0.75, y, f"{v:,.0f}".replace(",", "."),
                    pt=5, color="000000")
@@ -114,10 +116,10 @@ def comparison(name: str, doc_id: int) -> None:
     d = base("Loss (%): artikel acuan vs replikasi")
     frame(d, 100.0, "%", ticks=4)
     configs = [
-        ("m2c/10", 0.00, 0.72),
-        ("m2c/20", 0.00, 2.03),
+        ("m2c/10", 0.00, 0.00),
+        ("m2c/20", 0.00, 0.33),
         ("c2m/10", 92.54, 0.00),
-        ("c2m/20", 95.52, 0.02),
+        ("c2m/20", 95.52, 0.01),
     ]
     step = (PLOT_R - PLOT_L) / 4
     for i, (label, art, ours) in enumerate(configs):
