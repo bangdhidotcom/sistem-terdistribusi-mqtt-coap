@@ -34,7 +34,8 @@ BLOCKS = [
                 "di atas UDP) pada satu host localhost. Enam peran logis dijalankan terpisah agar "
                 "masing-masing dapat diverifikasi. Kampanye eksperimen terdiri dari 40 run: dua arah, "
                 "dua laju (10 dan 20 pesan/detik), sepuluh pengulangan, masing-masing 10 menit. "
-                "Seluruh 40 run berhasil. Kami mengukur tingkat keberhasilan, loss, delay konversi, "
+                "Seluruh 40 run berhasil, dengan total <b>290.107 pesan terkirim</b> dan <b>99,815% "
+                "terverifikasi</b>. Kami mengukur tingkat keberhasilan, loss, delay konversi, "
                 "delay ujung-ke-ujung (E2E), CPU, dan memori. Payload utama berukuran 4.096 byte; "
                 "payload 204.800 byte diuji terpisah dengan blockwise karena ukuran itu terlalu besar "
                 "untuk satu datagram CoAP.",
@@ -145,6 +146,50 @@ BLOCKS = [
                 "mengklaim angka kami lebih benar; kami hanya membandingkan secara kualitatif dan "
                 "menjelaskan perbedaan definisi timestamp serta antrean.",
     },
+    {"type": "h2", "text": "2.1 Konfigurasi artikel dan adaptasi kami"},
+    {
+        "type": "table",
+        "header": ["Parameter", "Nilai pada artikel", "Adaptasi pada proyek ini"],
+        "rows": [
+            ["Jumlah pesan per skenario", "200 pesan (bukan target kami)", "Uji durasi 10 menit; 4.492&#8211;11.087 pesan per run"],
+            ["Laju pengiriman", "10 dan 20 pesan/detik", "Dipertahankan persis (10 dan 20 pesan/detik)"],
+            ["Ukuran payload", "200 KB", "4.096 byte pada matriks utama; 204.800 byte diuji terpisah (blockwise)"],
+            ["Arah translasi", "MQTT ke CoAP dan sebaliknya", "Dipertahankan persis"],
+            ["Metrik", "delay konversi, RTT, loss, CPU", "Keberhasilan, loss, delay konversi, E2E, CPU dan memori"],
+        ],
+        "widths_cm": [3.8, 5.0, 7.2],
+    },
+    {
+        "type": "p",
+        "text": "Terkait angka <b>200 pesan</b>: artikel menguji 200 pesan per skenario, sehingga pada laju "
+                "10 pesan/detik percobaan hanya berlangsung sekitar 20 detik. Kampanye kami justru menguji "
+                "<b>beban berkelanjutan 10 menit</b>: setiap run mengirim antara 4.492 dan 11.087 pesan, "
+                "sekitar 22&#8211;55 kali lipat jumlah pesan artikel. Jadi 200 pesan adalah parameter "
+                "skenario artikel acuan, bukan target jumlah pesan proyek ini. Kami tidak mengabaikan konfigurasi "
+                "artikel; kami menggantinya dengan uji lebih panjang agar tren per menit, stabilitas "
+                "antrean, dan pemanasan CPU dapat diamati. Perubahan ini kami nyatakan eksplisit di sini "
+                "sesuai ketentuan adaptasi teknis spek.",
+    },
+    {"type": "h2", "text": "2.2 Hasil artikel sebagai pembanding"},
+    {
+        "type": "table",
+        "header": ["Arah", "Pesan/detik", "Delay (s)", "RTT (s)", "Loss (%)"],
+        "rows": [
+            ["MQTT ke CoAP", "10", "52,43407", "52,9", "0"],
+            ["MQTT ke CoAP", "20", "53,11167", "53,5", "0"],
+            ["CoAP ke MQTT", "10", "0,179852", "0,1", "92,53731"],
+            ["CoAP ke MQTT", "20", "0,182637", "0,1", "95,52239"],
+        ],
+        "widths_cm": [4.6, 2.8, 3.2, 2.6, 2.8],
+    },
+    {
+        "type": "p",
+        "text": "Tabel di atas adalah pembanding, bukan target yang harus ditiru. Artikel memakai RYU, "
+                "Open vSwitch, Raspberry Pi, dan ESP8266 dengan payload 200 KB; kami memakai enam proses "
+                "Python pada satu host dengan payload 4 KB. Perbedaan definisi timestamp, mekanisme antrean, "
+                "interval polling, dan ukuran payload membuat angka tidak sebanding secara langsung. "
+                "Kami bahas sebabnya di Bab 7.",
+    },
     {"type": "h1", "text": "3. Arsitektur Sistem"},
     {
         "type": "p",
@@ -162,16 +207,16 @@ BLOCKS = [
     },
     {
         "type": "table",
-        "header": ["No", "Peran", "File", "Alamat / kanal"],
+        "header": ["No", "Peran dan file", "Tanggung jawab", "Alamat / kanal"],
         "rows": [
-            ["1", "MQTT broker", "src/mqtt_broker.py", "127.0.0.1:1883 dan :1884"],
-            ["2", "CoAP server", "src/coap_server.py", "127.0.0.1:5683 dan :5684"],
-            ["3", "Conversion server", "src/conversion_server.py", "subscribe MQTT + POST/GET CoAP"],
-            ["4", "MQTT publisher", "src/mqtt_publisher.py", "iot/mqtt_to_coap"],
-            ["5", "MQTT subscriber", "src/mqtt_subscriber.py", "iot/coap_to_mqtt"],
-            ["6", "CoAP POST/GET client", "src/coap_client.py", "/source dan /target"],
+            ["1", "MQTT broker<br>src/mqtt_broker.py", "Menerima publish dan mendistribusikan lewat TCP", "127.0.0.1:1883 dan :1884"],
+            ["2", "CoAP server<br>src/coap_server.py", "Resource POST/GET via UDP, simpan data terbaru", "127.0.0.1:5683 dan :5684"],
+            ["3", "Conversion server<br>src/conversion_server.py", "Menjalankan modul MQTT&#8594;CoAP dan CoAP&#8594;MQTT", "subscribe MQTT + POST/GET CoAP"],
+            ["4", "MQTT publisher<br>src/mqtt_publisher.py", "Pesan uji ber-ID unik, timestamp, dan payload", "iot/mqtt_to_coap"],
+            ["5", "MQTT subscriber<br>src/mqtt_subscriber.py", "Menerima hasil translasi dari sisi CoAP", "iot/coap_to_mqtt"],
+            ["6", "CoAP POST/GET client<br>src/coap_client.py", "Kirim ke CoAP dan verifikasi hasil dari MQTT", "/source dan /target"],
         ],
-        "widths_cm": [1.0, 3.4, 5.4, 6.2],
+        "widths_cm": [0.8, 4.4, 6.0, 4.8],
     },
     {
         "type": "p",
@@ -192,8 +237,9 @@ BLOCKS = [
     {
         "type": "image",
         "path": "output/flow_mqtt_to_coap.png",
-        "caption": "Gambar 2. Enam langkah MQTT&#8594;CoAP. Lingkaran bernomor menunjukkan urutan proses.",
-        "width_cm": 7.6,
+        "caption": "Gambar 2. Enam tahap MQTT&#8594;CoAP. Panah berwarna = pesan; loop ungu = aksi internal; "
+                   "bilah pada Conversion Server = masa aktifnya.",
+        "width_cm": 12.5,
     },
     {
         "type": "numbered",
@@ -206,12 +252,19 @@ BLOCKS = [
             "CoAP GET client mengambil pesan, mencocokkan SHA-256, dan mencatat <b>dst_recv_ts</b>.",
         ],
     },
+    {
+        "type": "table",
+        "header": ["Tahap", "1", "2", "3", "4", "5", "6"],
+        "rows": [["Bukti minimum (&#167;3.1)", "Log kirim dan ID", "Pesan terlihat di broker",
+                  "Log terima dan validasi", "Log mulai translasi", "Log ID tersimpan", "Integritas E2E"]],
+        "widths_cm": [2.9, 2.3, 2.3, 2.4, 2.3, 2.0, 1.8],
+    },
     {"type": "h2", "text": "4.2 Arah CoAP ke MQTT"},
     {
         "type": "image",
         "path": "output/flow_coap_to_mqtt.png",
-        "caption": "Gambar 3. Enam langkah CoAP&#8594;MQTT. Perhatikan langkah 3 (polling 1 detik) dan langkah 4 (dedup).",
-        "width_cm": 7.6,
+        "caption": "Gambar 3. Enam tahap CoAP&#8594;MQTT. Perhatikan tahap 3 (polling 1 detik) dan tahap 4 (dedup).",
+        "width_cm": 12.5,
     },
     {
         "type": "numbered",
@@ -223,6 +276,13 @@ BLOCKS = [
             "Converter publish ke topik <b>iot/coap_to_mqtt</b> lewat broker 1884.",
             "MQTT subscriber menerima, memverifikasi ID/hash, lalu mencatat <b>dst_recv_ts</b>.",
         ],
+    },
+    {
+        "type": "table",
+        "header": ["Tahap", "1", "2", "3", "4", "5", "6"],
+        "rows": [["Bukti minimum (&#167;3.2)", "Log kirim dan ID", "Log resource dan code",
+                  "Log polling dan GET", "Keputusan publish / skip", "Log publish dan koneksi", "Log terima dan validasi"]],
+        "widths_cm": [2.9, 2.3, 2.3, 2.4, 2.3, 2.0, 1.8],
     },
     {
         "type": "callout",
@@ -283,6 +343,14 @@ BLOCKS = [
                 "mundur tidak bernilai negatif, dan kami dokumentasikan.",
     },
     {
+        "type": "p",
+        "text": "Untuk CPU dan memori, psutil diambil <b>592 sampel per run</b> (interval 1 detik selama "
+                "10 menit). Dari sampel itu dihitung tiga ringkasan: <b>rerata</b> (nilai tipikal), "
+                "<b>p95</b> (nilai yang hanya terlampaui 5% sampel), dan <b>puncak</b> (nilai maksimum). "
+                "Ketiganya wajib dilaporkan. p95 lebih tahan terhadap lonjakan sesaat daripada puncak, "
+                "tetapi tetap memperlihatkan beban ekstrem.",
+    },
+    {
         "type": "callout",
         "title": "Kenapa 200 KB tidak dipakai di kampanye utama?",
         "text": "Payload 204.800 byte memang berhasil dikirim dengan blockwise, tetapi throughput "
@@ -297,15 +365,36 @@ BLOCKS = [
                 "&#215; 11 entri). Angka diambil langsung dari hasil eksperimen, bukan estimasi.",
     },
     {
+        "type": "p",
+        "text": "<b>Tabel 6.1.</b> Rerata keberhasilan konversi untuk seluruh pengulangan selama 10 menit. "
+                "Kolom Terkirim dan Terverifikasi adalah total akumulasi dari 10 run per kombinasi.",
+    },
+    {
         "type": "table",
-        "header": ["Arah", "Laju", "Terkirim", "Terverifikasi", "Sukses %", "Loss %", "Konv ms", "E2E ms", "CPU %", "Mem MB"],
+        "header": ["Arah", "Laju", "Terkirim", "Terverifikasi", "Keberhasilan (%)", "Pengulangan"],
         "rows": [
-            ["c2m", "10", "46.599", "46.599", "100,00", "0,00", "3,87", "834,50", "12,67", "49,9"],
-            ["c2m", "20", "75.060", "75.055", "99,98", "0,02", "3,93", "1.126,71", "20,32", "54,2"],
-            ["m2c", "10", "57.576", "57.411", "99,28", "0,72", "21,49", "191,63", "11,04", "43,6"],
-            ["m2c", "20", "110.872", "110.506", "97,97", "2,03", "21,32", "278,94", "17,63", "43,9"],
+            ["CoAP&#8594;MQTT", "10", "46.599", "46.599", "100,00", "10"],
+            ["CoAP&#8594;MQTT", "20", "75.060", "75.055", "99,98", "10"],
+            ["MQTT&#8594;CoAP", "10", "57.576", "57.411", "99,28", "10"],
+            ["MQTT&#8594;CoAP", "20", "110.872", "110.506", "97,97", "10"],
         ],
-        "widths_cm": [1.2, 1.0, 1.9, 2.2, 1.6, 1.4, 1.6, 1.9, 1.4, 1.6],
+        "widths_cm": [3.4, 1.2, 2.6, 2.7, 3.4, 2.7],
+    },
+    {
+        "type": "p",
+        "text": "<b>Tabel 6.2.</b> Rerata conversion loss dan pemakaian sumber daya conversion server. "
+                "Tiga angka pada kolom CPU dan Memori berturut-turut adalah <b>rerata / p95 / puncak</b>.",
+    },
+    {
+        "type": "table",
+        "header": ["Arah", "Laju", "Loss (%)", "Delay konv. (ms)", "Delay E2E (ms)", "CPU (%)", "Memori (MB)"],
+        "rows": [
+            ["CoAP&#8594;MQTT", "10", "0,00", "3,88", "834,50", "12,67 / 20,28 / 26,5", "49,9 / 53,3 / 54,7"],
+            ["CoAP&#8594;MQTT", "20", "0,02", "3,93", "1.126,71", "20,32 / 34,83 / 72,3", "54,2 / 58,7 / 59,9"],
+            ["MQTT&#8594;CoAP", "10", "0,72", "21,49", "191,63", "11,04 / 16,43 / 26,5", "43,6 / 44,1 / 44,5"],
+            ["MQTT&#8594;CoAP", "20", "2,03", "21,32", "278,94", "17,64 / 25,24 / 54,6", "43,9 / 44,2 / 44,5"],
+        ],
+        "widths_cm": [2.8, 0.9, 1.3, 2.5, 2.6, 3.1, 2.8],
     },
     {
         "type": "p",
@@ -348,7 +437,19 @@ BLOCKS = [
         "type": "p",
         "text": "Cara membaca grafik: garis yang naik berarti delay atau CPU bertambah pada menit "
                 "tersebut. Fluktuasi kecil masih wajar pada localhost karena penjadwalan proses. "
-                "Yang penting adalah tren dan besaran, bukan satu titik ekstrem.",
+                "Yang penting adalah tren dan besaran, bukan satu titik ekstrem. Seluruh grafik "
+                "dirata-ratakan per menit dari 10 run, sehingga satu titik tidak mewakili satu pesan "
+                "tunggal melainkan ratusan pesan dalam menit itu.",
+    },
+    {
+        "type": "p",
+        "text": "Menjawab <b>mengapa</b> angka di tabel muncul: arah CoAP&#8594;MQTT hampir tanpa loss "
+                "karena antrean <b>/source</b> menyimpan pesan sampai converter mengambilnya, tetapi E2E "
+                "tinggi karena polling 1 detik. Arah MQTT&#8594;CoAP loss-nya lebih besar karena POST CoAP "
+                "memiliki batas timeout, sementara E2E tetap rendah karena broker langsung meneruskan "
+                "pesan. p95 delay E2E mencapai 1.365&#8211;1.731 ms pada c2m dan 309&#8211;454 ms pada m2c, "
+                "menunjukkan ekor distribusi yang jauh lebih panjang dari rerata. CPU dan memori naik "
+                "seiring laju 20 pesan/detik, tetapi puncak CPU 72,3% masih menyisakan ruang.",
     },
     {"type": "pagebreak"},
     {"type": "h1", "text": "7. Analisis dan Diskusi"},
@@ -376,6 +477,13 @@ BLOCKS = [
         "text": "Pada 20 pesan/detik, antrean CoAP lebih cepat penuh dan verifier GET lebih sering "
                 "bekerja. Kami memperbaiki stabilitas dengan membatasi jumlah pesan per respons GET, "
                 "menaikkan timeout GET, dan mempercepat polling verifikasi.",
+    },
+    {
+        "type": "p",
+        "text": "Memori converter relatif stabil: rerata 43,6&#8211;54,2 MB, p95 44,1&#8211;58,7 MB, "
+                "dan puncak 44,5&#8211;59,9 MB. Kisaran p95 yang dekat dengan rerata menunjukkan tidak "
+                "ada kebocoran memori selama 10 menit; kenaikan mengikuti laju pesan, bukan durasi. "
+                "Ini penting karena metrik memori sering terlihat 'datar' pada grafik CPU.",
     },
     {
         "type": "p",

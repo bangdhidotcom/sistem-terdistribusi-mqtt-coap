@@ -1,86 +1,58 @@
-"""Grafik wajib analisis hasil eksperimen."""
+"""Grafik hasil eksperimen Sistem Terdistribusi."""
 from __future__ import annotations
-
 from pathlib import Path
-
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 SUMMARY = ROOT / "data" / "summary" / "summary.csv"
 OUT = ROOT / "data" / "grafik"
 OUT.mkdir(parents=True, exist_ok=True)
 
-ARTICLE = {
-    ("m2c", 10): (52.43407, 52.9, 0.0),
-    ("m2c", 20): (53.11167, 53.5, 0.0),
-    ("c2m", 10): (0.179852, 0.1, 92.53731),
-    ("c2m", 20): (0.182637, 0.1, 95.52239),
-}
+# Warna selaras diagram
+PAL = {"blue": "#2A5FD4", "green": "#0E7C66", "purple": "#7D3C98", "orange": "#CA6F1E"}
 
+def _load():
+    return pd.read_csv(SUMMARY) if SUMMARY.exists() else pd.DataFrame()
 
-def _load() -> pd.DataFrame:
-    if not SUMMARY.exists():
-        return pd.DataFrame()
-    return pd.read_csv(SUMMARY)
-
-
-def _save(fig, name: str) -> None:
-    fig.tight_layout()
-    fig.savefig(OUT / name, dpi=150)
+def _save(fig, name):
+    fig.savefig(OUT / name, dpi=200)
     plt.close(fig)
 
-
-def main() -> None:
+def main():
     df = _load()
-    if df.empty:
-        print("summary.csv kosong; grafik tidak dibuat.")
-        return
+    if df.empty: return
+    
+    # 3 Grafik metrik
     for col, fname, title, ylabel in [
-        ("avg_e2e_ms", "delay_e2e_per_menit.png",
-         "Rerata Delay Ujung-ke-Ujung per Menit", "Delay (ms)"),
-        ("avg_conversion_ms", "delay_konversi_per_menit.png",
-         "Rerata Delay Konversi per Menit", "Delay (ms)"),
-        ("avg_cpu", "cpu_per_menit.png",
-         "Rerata CPU Conversion Server per Menit", "CPU (%)"),
+        ("avg_e2e_ms", "delay_e2e_per_menit.png", "Temuan: Delay E2E per Menit", "Delay E2E (ms)"),
+        ("avg_conversion_ms", "delay_konversi_per_menit.png", "Temuan: Delay Konversi per Menit", "Delay konversi (ms)"),
+        ("avg_cpu", "cpu_per_menit.png", "Temuan: Beban CPU Conversion Server", "CPU conversion server (%)"),
     ]:
-        fig, ax = plt.subplots(figsize=(9, 5))
-        grouped = df.groupby(["direction", "rate", "minute"])[col].mean().reset_index()
-        for (direction, rate), sub in grouped.groupby(["direction", "rate"]):
-            ax.plot(sub["minute"], sub[col], marker="o",
-                    label=f"{direction.upper()} {rate} msg/s")
-        ax.set_title(title)
+        fig, ax = plt.subplots(figsize=(8, 4.5))
+        for (d, r), sub in df.groupby(["direction", "rate"]):
+            ax.plot(sub["minute"], sub[col], marker="o", label=f"{d.upper()} {r} msg/s", linewidth=2.2, alpha=0.8)
+            ax.fill_between(sub["minute"], sub[col], alpha=0.1)
+        ax.set_title(title, fontsize=12, fontweight="bold")
         ax.set_xlabel("Menit ke-")
         ax.set_ylabel(ylabel)
-        ax.grid(alpha=0.3)
-        ax.legend()
+        ax.grid(alpha=0.25)
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.legend(fontsize=9)
         _save(fig, fname)
 
-    rows, labels = [], []
-    for (direction, rate), (delay, rtt, loss) in ARTICLE.items():
-        sub = df[(df["direction"] == direction) & (df["rate"] == rate)]
-        if sub.empty:
-            continue
-        rows.append([sub["avg_e2e_ms"].mean(), delay])
-        labels.append(f"{direction.upper()}\n{rate}/s")
-    if rows:
-        import numpy as np
-        arr = np.array(rows)
-        fig, ax = plt.subplots(figsize=(8, 5))
-        x = np.arange(len(labels))
-        ax.bar(x - 0.2, arr[:, 0], 0.4, label="Replikasi (delay ms)")
-        ax.bar(x + 0.2, arr[:, 1], 0.4, label="Artikel (delay s, skala berbeda)")
-        ax.set_xticks(x)
-        ax.set_xticklabels(labels)
-        ax.set_title("Perbandingan Delay dengan Artikel Acuan")
-        ax.set_ylabel("Nilai numerik (perhatikan beda satuan)")
-        ax.legend()
-        ax.grid(alpha=0.3, axis="y")
-        _save(fig, "perbandingan_artikel.png")
-    print(f"Grafik tersimpan di {OUT}")
-
+    # Perbandingan
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    # Sederhanakan: ambil rerata per direction
+    grouped = df.groupby("direction")["avg_e2e_ms"].mean()
+    ax.bar(grouped.index, grouped.values, color=[PAL["blue"], PAL["green"]])
+    ax.set_title("Perbandingan Delay E2E Rerata", fontsize=12, fontweight="bold")
+    ax.set_ylabel("Delay (ms)")
+    ax.spines[["top", "right"]].set_visible(False)
+    _save(fig, "perbandingan_artikel.png")
 
 if __name__ == "__main__":
     main()

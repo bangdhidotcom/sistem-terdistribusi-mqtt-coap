@@ -134,6 +134,8 @@ def main() -> None:
             "p95_cpu": round(_p95(cpu), 3),
             "peak_cpu": round(max(cpu), 3) if cpu else 0.0,
             "avg_mem_mb": round(sum(mem) / len(mem), 3) if mem else 0.0,
+            "p95_mem_mb": round(_p95(mem), 3) if mem else 0.0,
+            "peak_mem_mb": round(max(mem), 3) if mem else 0.0,
         })
     # Run yang gagal total tidak punya event PUBLISH/POST, tetap dicatat.
     existing = {r["run"] for r in summary_rows}
@@ -157,6 +159,8 @@ def main() -> None:
             "p95_cpu": round(_p95(cpu), 3),
             "peak_cpu": round(max(cpu), 3) if cpu else 0.0,
             "avg_mem_mb": round(sum(mem) / len(mem), 3) if mem else 0.0,
+            "p95_mem_mb": round(_p95(mem), 3) if mem else 0.0,
+            "peak_mem_mb": round(max(mem), 3) if mem else 0.0,
         })
         existing.add(run)
 

@@ -20,7 +20,8 @@ RYU, Mininet, maupun Open vSwitch.
 
 Tahap akhir. Kode, konfigurasi, skrip eksperimen, data, laporan **PDF dan DOCX**,
 slide, diagram editabel, dan panduan sudah tersedia di repositori ini. Seluruh
-40 run valid (`data/perfect_done.txt` = `DONE_PERFECT zero=0`).
+40 run valid: 290.107 pesan terkirim, 99,815% terverifikasi
+(`data/summary/summary.csv`, `data/metrics.json`).
 
 ## Luaran
 
@@ -28,12 +29,14 @@ slide, diagram editabel, dan panduan sudah tersedia di repositori ini. Seluruh
 2. Laporan teknis: `laporan/Laporan_Akhir_Sistem_Terdistribusi.pdf` (8 halaman) dan
    `laporan/Laporan_Akhir_Sistem_Terdistribusi.docx`. Keduanya dibuat dari satu sumber
    blok `laporan/content.py` oleh `laporan/build_laporan.py`, sehingga isinya identik
-   (verifikasi otomatis ≈99,45% kesamaan teks; sisa perbedaan hanya marka layout).
-3. Data: `data/raw/messages.csv`, `data/summary/summary.csv`, `data/grafik/*.png`.
-4. Slide: `slide/Slide_Presentasi.pptx` (10 slide).
-5. Diagram: `output/*.png` (full color, High-DPI), `output-xml/*.xml` (shape Word
-   editabel), `diagram_specs/design_v2/*.svg` (desain vektor), dan
-   `laporan/Diagram_Editabel_Word.docx`.
+   (verifikasi otomatis ≈99,37% kesamaan teks; sisa perbedaan hanya marka layout).
+3. Data: `data/raw/messages.csv`, `data/summary/summary.csv` (440 baris x 18 kolom),
+   `data/grafik/*.png`.
+4. Slide: `slide/Slide_Presentasi.pptx` (12 slide).
+5. Diagram: `output/*.png` (full color, 200 DPI) dan `output-xml/*.xml` (shape Word
+   editabel, DrawingML asli tanpa gambar tertanam), plus
+   `laporan/Diagram_Editabel_Word.docx`. Keduanya berasal dari satu sumber
+   `diagram_specs/`; salinan SVG lama tidak dijadikan rujukan.
 6. Panduan: `panduan/Verifikasi_Individu.md`, `Panduan_Pengumpulan_LMS.md`, `QnA.md`.
 
 ## Sumber tunggal folder
@@ -51,13 +54,22 @@ berisi satu salinan per path — tidak ada duplikat struktur di remote.
 
 ```powershell
 python experiments/payload_gen.py --size 4096 --out data/payload_4096.bin
+# Smoke test singkat (kampanye penuh 40 run sudah selesai, jangan dijalankan ulang):
 python experiments/run_matrix.py --duration 15 --reps 1 --rate 10 --direction both --payload-size 4096
 python experiments/summarize.py
 python experiments/plotting.py
-python laporan/build_report.py
+python diagram_specs/build_diagrams.py
+python diagram_specs/spec_flow.py
+python laporan/build_docx.py
+python laporan/build_laporan.py
 python slide/build_slides.py
 python -m unittest discover -s tests
 ```
+
+Urutan regenerasi di atas wajib berurutan: diagram dulu, baru DOCX editabel, PDF, lalu slide.
+`laporan/build_report.py` adalah pembuat laporan versi lama yang menimpa path PDF yang sama —
+**jangan dijalankan**; satu-satunya sumber kanonik adalah `laporan/content.py` lewat
+`laporan/build_laporan.py`.
 
 Kampanye penuh: 40 run (40 valid) = dua arah x dua laju x 10 pengulangan x 10 menit.
 Payload kampanye 4 KB; uji tambahan 200 KB blockwise tersedia lewat `--payload-size 204800`.

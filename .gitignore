@@ -11,10 +11,11 @@ data/payload_*.bin
 # Log JSONL per-run bersifat sementara; bukti utama ada di messages.csv
 data/raw/*/*.jsonl
 
-# Status/checkpoint internal
+# Status/checkpoint internal (bukan luaran yang dikumpulkan)
 data/status_check_*.txt
 data/campaign_pids.txt
 data/rerun_pids.txt
 data/supervisor_pid.txt
 data/final_retry_pid.txt
 data/perfect_pid.txt
+data/*done*.txt
